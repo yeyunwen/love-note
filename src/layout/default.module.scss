@@ -1,0 +1,20 @@
+.defaultLayout {
+  .navContainer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: #fff;
+    border-top: 1px solid #ddd;
+    .navList {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      height: 100%;
+      .listItem {
+        color: rgba(51, 51, 51, 0.6);
+      }
+    }
+  }
+}

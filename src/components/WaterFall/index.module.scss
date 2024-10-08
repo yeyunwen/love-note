@@ -1,0 +1,17 @@
+.waterFallContainer {
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll; // 注意需要提前设置展示滚动条，如果等数据展示再出现滚动造成计算偏差
+  overflow-x: hidden;
+  .waterFallList {
+    position: relative;
+    width: 100%;
+    .waterFallItem {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+  }
+}

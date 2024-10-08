@@ -25,12 +25,12 @@ export default defineConfig({
   ],
   css: {
     postcss: {
-      plugins: [
-        postcssPxtorem({
-          rootValue: 37.5, // 设计稿宽度的1/10
-          propList: ["*"],
-        }),
-      ],
+      // plugins: [
+      //   postcssPxtorem({
+      //     rootValue: 37.5, // 设计稿宽度的1/10
+      //     propList: ["*"],
+      //   }),
+      // ],
     },
   },
 });

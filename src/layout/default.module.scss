@@ -1,10 +1,13 @@
 .defaultLayout {
+  $navHeight: 48px;
+  width: 100%;
+  height: calc(100vh - $navHeight);
   .navContainer {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 40px;
+    height: $navHeight;
     background: #fff;
     border-top: 1px solid #ddd;
     .navList {
@@ -14,6 +17,9 @@
       height: 100%;
       .listItem {
         color: rgba(51, 51, 51, 0.6);
+        a.active {
+          color: #333;
+        }
       }
     }
   }

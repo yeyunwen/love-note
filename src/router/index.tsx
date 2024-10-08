@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouteObject } from "react-router-dom";
-import Index from "../pages/index";
+import Index from "@/pages/index";
 import { DefaultLayout } from "../layout";
+import Detail from "@/pages/detail";
 
 const routes: RouteObject[] = [
   {
@@ -13,7 +14,11 @@ const routes: RouteObject[] = [
       },
       {
         path: "/about",
-        element: <>about </>,
+        element: <>about123 </>,
+      },
+      {
+        path: "/detail",
+        element: <Detail />,
       },
     ],
   },

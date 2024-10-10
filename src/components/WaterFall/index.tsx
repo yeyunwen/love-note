@@ -19,14 +19,10 @@ export interface CardPos {
 }
 
 export type WaterFallChildren = (data: {
-  data: CardItem;
+  item: CardItem;
   index: number;
   imgHeight: number;
 }) => React.ReactNode;
-
-type WaterFallItem = {
-  data: CardItem;
-} & CardPos;
 
 type WaterFallProps = {
   column?: number;
@@ -46,6 +42,28 @@ const defaultProps = {
 
 const WaterFall = (props: WaterFallProps) => {
   props = { ...defaultProps, ...props };
+  console.log("props.column", props.column);
+
+  const waterFallRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const [curPage, setCurPage] = useState(1);
+  const [dataList, setDataList] = useState<CardItem[]>([]);
+  const [posList, setPosList] = useState<CardPos[]>([]);
+  const [cardWidth, setCardWidth] = useState(0);
+  const [columnHeight, setColumnHeight] = useState(
+    new Array(props.column).fill(0)
+  );
+  const [imageHeightComputed, setImageHeightComputed] = useState(false);
+  const [fetchList, setFetchList] = useState<CardItem[]>([]);
+
+  const getData = async (page: number, pageSize: number) => {
+    const fetchList = await props.request(page, pageSize);
+    setFetchList(fetchList);
+    setDataList([...dataList, ...fetchList]);
+    const imgPos = computedImgHeight(fetchList); // 增量计算
+    setImageHeightComputed(true);
+    setPosList([...posList, ...imgPos]);
+  };
 
   const computedCardWidth = () => {
     if (waterFallRef.current) {
@@ -56,29 +74,13 @@ const WaterFall = (props: WaterFallProps) => {
     return 0;
   };
 
-  const waterFallRef = useRef<HTMLDivElement>(null);
-  const [curPage, setCurPage] = useState(1);
-  const [wateFallList, setWateFallList] = useState<WaterFallItem[]>([]);
-  const cardWidth = computedCardWidth();
-  console.log("cardWidth", cardWidth);
-
-  const fetchData = async (page: number, pageSize: number) => {
-    const data = await props.request(page, pageSize);
-    const imgPos = computedImgHeight(data);
-    setWateFallList([...wateFallList, ...imgPos]);
-  };
-
-  useEffect(() => {
-    fetchData(curPage, props.pageSize!);
-  }, []);
-
-  const computedImgHeight = (list: CardItem[]): WaterFallItem[] => {
+  const computedImgHeight = (list: CardItem[]): CardPos[] => {
+    const cardWidth = computedCardWidth();
     return list.map((item) => {
       const imgHeight = (item.height * cardWidth) / item.width;
       return {
-        data: item,
         width: cardWidth,
-        imgHeight,
+        imgHeight: imgHeight,
         x: 0,
         y: 0,
       };
@@ -111,25 +113,76 @@ const WaterFall = (props: WaterFallProps) => {
     return result;
   };
 
+  const handleScroll = throttle(() => {
+    if (waterFallRef.current) {
+      const { scrollTop, clientHeight, scrollHeight } = waterFallRef.current;
+      const bottomGap = scrollHeight - scrollTop - clientHeight;
+
+      if (bottomGap <= props.bottomGapToFetch!) {
+        setCurPage(curPage + 1);
+        getData(curPage + 1, props.pageSize!);
+      }
+    }
+  }, 1000);
+
+  useEffect(() => {
+    setCardWidth(computedCardWidth());
+    getData(curPage, props.pageSize!);
+    // const containerObserver = new ResizeObserver(() => {
+    //   setCardWidth(computedCardWidth());
+    // });
+    // if (waterFallRef.current) {
+    //   containerObserver.observe(waterFallRef.current);
+
+    //   return () => {
+    //     containerObserver.disconnect();
+    //   };
+    // }
+  }, []);
+
+  useEffect(() => {
+    if (imageHeightComputed) {
+      const realPos = computedRealPos(fetchList);
+      setPosList(
+        posList.slice(0, posList.length - fetchList.length).concat(realPos)
+      );
+      setImageHeightComputed(false);
+    }
+  }, [imageHeightComputed]);
+
+  useEffect(() => {
+    setCardWidth(computedCardWidth());
+    const imgPos = computedImgHeight(dataList);
+    setImageHeightComputed(true);
+    setPosList([...posList, ...imgPos]);
+    const realPos = computedRealPos(dataList, new Array(props.column).fill(0));
+    setPosList([...realPos]);
+    setImageHeightComputed(false);
+  }, [props.column]);
+
   return (
-    <div className={style.waterFallContainer} ref={waterFallRef}>
-      <div className={style.waterFallList}>
-        {wateFallList.map((item, index) => {
+    <div
+      className={style.waterFallContainer}
+      ref={waterFallRef}
+      onScroll={handleScroll}
+    >
+      <div className={style.waterFallList} ref={listRef}>
+        {dataList.map((item, index) => {
           return (
             <section
               className={style.waterFallItem}
-              key={item.data.id}
+              key={item.id}
               style={{
                 width: `${cardWidth}px`,
-                transform: `translate(${item.x}px,${item.y}px)`,
+                transform: `translate(${posList[index].x}px,${posList[index].y}px)`,
                 transition: "all 0.3s",
               }}
             >
               {props.children
                 ? props.children({
-                    data: item.data,
+                    item,
                     index,
-                    imgHeight: item.imgHeight,
+                    imgHeight: posList[index].imgHeight,
                   })
                 : null}
             </section>

@@ -1,4 +1,4 @@
-import WaterFall, { type CardItem } from "@/components/WaterFall";
+import WaterFall, { type CardItem } from "@/components/WaterFall/index.new";
 import style from "./index.module.scss";
 import data from "./mock.json";
 import NoteCard from "./components/NoteCard";
@@ -27,7 +27,7 @@ const Index = () => {
   };
 
   const fContainerRef = useRef<HTMLDivElement>(null);
-  const [column, setColumn] = useState(2);
+  const [column, setColumn] = useState(0);
   const fContainerObserver = new ResizeObserver((entries) => {
     console.log("reset");
 
@@ -35,22 +35,24 @@ const Index = () => {
   });
 
   const changeColumn = (width: number) => {
-    console.log("width", width);
+    let column = 2;
     if (width > 960) {
       console.log(5);
-      setColumn(5);
+      column = 5;
     } else if (width >= 690 && width < 960) {
       console.log(4);
-
-      setColumn(4);
+      column = 4;
     } else if (width >= 500 && width < 690) {
       console.log(3);
-      setColumn(3);
+      column = 3;
     } else {
       console.log(2);
-      setColumn(2);
+      column = 2;
     }
+
+    setColumn(column);
   };
+
   useEffect(() => {
     if (fContainerRef.current) {
       fContainerObserver.observe(fContainerRef.current);
@@ -64,17 +66,21 @@ const Index = () => {
   return (
     <div className={style.indexContainer} ref={fContainerRef}>
       <main>
-        <WaterFall request={getData} column={column}>
-          {({ item, index, imgHeight }) => {
-            return NoteCard({
-              detail: {
-                bgColor: colorArr[index % (colorArr.length - 1)],
-                imgHeight,
-                ...item,
-              },
-            });
-          }}
-        </WaterFall>
+        {/* 如果默认值是2，可实际计算是3，waterfall会出现问题
+        核心原因还是需要计算图片高度渲染好之后，才能计算卡片高度，一共2次渲染 */}
+        {column && (
+          <WaterFall request={getData} column={column}>
+            {({ item, index, imgHeight }) => {
+              return NoteCard({
+                detail: {
+                  bgColor: colorArr[index % (colorArr.length - 1)],
+                  imgHeight,
+                  ...item,
+                },
+              });
+            }}
+          </WaterFall>
+        )}
       </main>
     </div>
   );

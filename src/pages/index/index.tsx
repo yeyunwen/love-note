@@ -1,4 +1,4 @@
-import WaterFall, { type CardItem } from "@/components/WaterFall/index.new";
+import WaterFall, { type CardItem } from "@/components/WaterFall";
 import style from "./index.module.scss";
 import data from "./mock.json";
 import NoteCard from "./components/NoteCard";

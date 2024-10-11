@@ -157,7 +157,10 @@ const WaterFall = (props: WaterFallProps) => {
     }
   }, []);
 
-  // 更新、滚动（增量）
+  /**
+   * 滚动、fetch数据更新
+   * 增量计算 pos
+   */
   useEffect(() => {
     if (fetchList.length) {
       console.log("update fetch", fetchList);
@@ -171,7 +174,11 @@ const WaterFall = (props: WaterFallProps) => {
     }
   }, [fetchList]);
 
-  // 父组件宽度改变 column 全量计算 pos
+  /**
+   * 父组件宽度改变 column
+   * 组件自身宽度改变 cardWidth
+   * 全量计算 pos
+   */
   useEffect(() => {
     const imgPos = computedImgHeight(allFetchList);
     setAllPosList(imgPos);
@@ -179,13 +186,6 @@ const WaterFall = (props: WaterFallProps) => {
     setNeedInitColumn(true);
   }, [props.column, cardWidth]);
 
-  // 组件自身宽度改变 cardWidth 全量计算 pos
-  useEffect(() => {
-    const imgPos = computedImgHeight(allFetchList);
-    setAllPosList(imgPos);
-    setFetchList([...allFetchList]);
-    setNeedInitColumn(true);
-  }, [cardWidth]);
   return (
     <div
       className={style.waterFallContainer}

@@ -24,14 +24,11 @@ export type WaterFallChildren = (data: {
   imgHeight: number;
 }) => React.ReactNode;
 
-type WaterFallItem = {
-  data: CardItem;
-} & CardPos;
-
 type WaterFallProps = {
   column?: number;
   gap?: number;
   pageSize?: number;
+  /** 底部距离触发刷新 */
   bottomGapToFetch?: number;
   request: (page: number, pageSize: number) => Promise<CardItem[]>;
   children?: WaterFallChildren;
@@ -48,18 +45,18 @@ const WaterFall = (props: WaterFallProps) => {
   props = { ...defaultProps, ...props };
 
   const waterFallRef = useRef<HTMLDivElement>(null);
-  const isInit = useRef<boolean>(false);
   const listRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isFinish, setIsFinish] = useState(false);
   const [curPage, setCurPage] = useState(1);
-
-  const [fetchList, setFetchList] = useState<CardItem[]>([]);
-  const [allFetchList, setAllFetchList] = useState<CardItem[]>([]);
-  const [allPosList, setAllPosList] = useState<CardPos[]>([]);
-  const [columnHeightList, setColumnHeightList] = useState<number[]>(
+  const [cardWidth, setCardWidth] = useState(0);
+  const [fetchList, setFetchList] = useState<CardItem[]>([]); // 增量获取的数据
+  const [allFetchList, setAllFetchList] = useState<CardItem[]>([]); // 全量获取的数据
+  const [allPosList, setAllPosList] = useState<CardPos[]>([]); // 全量获取的数据的位置
+  const [columnHeightList, setColumnHeightList] = useState<number[]>( // 每列的当前的高度
     new Array(props.column).fill(0)
   );
+  const [needInitColumn, setNeedInitColumn] = useState(false);
   const computedCardWidth = () => {
     if (waterFallRef && waterFallRef.current) {
       const width =
@@ -101,15 +98,16 @@ const WaterFall = (props: WaterFallProps) => {
   };
 
   const computedRealPos = (list: CardItem[]): CardPos[] => {
+    const getColumnHeightList = () => {
+      if (needInitColumn) {
+        return new Array(props.column).fill(0);
+      }
+      return [...columnHeightList];
+    };
+
     const cardWidth = computedCardWidth();
     const domList = Array.from(listRef.current!.children).slice(-list.length);
-    const tempColumnHeightList =
-      columnHeightList.length === props.column
-        ? [...columnHeightList]
-        : new Array(props.column).fill(0);
-
-    console.log("tempColumnHeightList", tempColumnHeightList);
-
+    const tempColumnHeightList = getColumnHeightList();
     const result = list.map((item, i) => {
       const cardHeight = domList[i].clientHeight;
       const minColumn = Math.min(...tempColumnHeightList);
@@ -125,6 +123,7 @@ const WaterFall = (props: WaterFallProps) => {
       };
     });
     setColumnHeightList([...tempColumnHeightList]);
+    setNeedInitColumn(false);
 
     return result;
   };
@@ -139,12 +138,23 @@ const WaterFall = (props: WaterFallProps) => {
         fetchData(curPage + 1, props.pageSize!);
       }
     }
-  }, 1000);
+  }, 100);
 
   // 挂载初始化
   useEffect(() => {
-    isInit.current = true;
     fetchData(curPage, props.pageSize!);
+    const containerObserver = new ResizeObserver(
+      throttle(() => {
+        setCardWidth(computedCardWidth());
+      }, 1000)
+    );
+    if (waterFallRef.current) {
+      containerObserver.observe(waterFallRef.current);
+
+      return () => {
+        containerObserver.disconnect();
+      };
+    }
   }, []);
 
   // 更新、滚动（增量）
@@ -166,12 +176,16 @@ const WaterFall = (props: WaterFallProps) => {
     const imgPos = computedImgHeight(allFetchList);
     setAllPosList(imgPos);
     setFetchList([...allFetchList]);
-    console.log("props.column change =====");
-    console.log("allFetchList", allFetchList);
-    console.log("fetchList", fetchList);
-    console.log("isInit.current", isInit.current);
-  }, [props.column]);
+    setNeedInitColumn(true);
+  }, [props.column, cardWidth]);
 
+  // 组件自身宽度改变 cardWidth 全量计算 pos
+  useEffect(() => {
+    const imgPos = computedImgHeight(allFetchList);
+    setAllPosList(imgPos);
+    setFetchList([...allFetchList]);
+    setNeedInitColumn(true);
+  }, [cardWidth]);
   return (
     <div
       className={style.waterFallContainer}

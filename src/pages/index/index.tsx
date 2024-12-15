@@ -3,6 +3,7 @@ import style from "./index.module.scss";
 import data from "./mock.json";
 import NoteCard from "./components/NoteCard";
 import { useEffect, useRef, useState } from "react";
+import { getNotesApi } from "@/api/note";
 
 const colorArr = ["#409eff", "#67c23a", "#e6a23c", "#f56c6c", "#909399"];
 
@@ -54,6 +55,8 @@ const Index = () => {
   };
 
   useEffect(() => {
+    getNotesApi();
+
     if (fContainerRef.current) {
       fContainerObserver.observe(fContainerRef.current);
     }

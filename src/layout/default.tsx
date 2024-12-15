@@ -8,8 +8,8 @@ const navList = [
     path: "/",
   },
   {
-    name: "add",
-    path: "/about",
+    name: "new",
+    path: "/new",
   },
 ];
 

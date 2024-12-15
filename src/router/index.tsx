@@ -1,9 +1,15 @@
 import { createBrowserRouter, RouteObject } from "react-router-dom";
-import Index from "@/pages/index";
 import { DefaultLayout } from "../layout";
+import Index from "@/pages/index";
+import Login from "@/pages/login";
 import Detail from "@/pages/detail";
+import New from "@/pages/new";
 
 const routes: RouteObject[] = [
+  {
+    path: "/login",
+    element: <Login />,
+  },
   {
     path: "/",
     element: <DefaultLayout />,
@@ -13,8 +19,8 @@ const routes: RouteObject[] = [
         element: <Index />,
       },
       {
-        path: "/about",
-        element: <>about123 </>,
+        path: "/new",
+        element: <New />,
       },
       {
         path: "/detail",
@@ -24,7 +30,7 @@ const routes: RouteObject[] = [
   },
 ];
 const router = createBrowserRouter(routes, {
-  basename: "/love-note",
+  basename: "/",
 });
 
 export default router;

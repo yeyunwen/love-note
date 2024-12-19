@@ -5,3 +5,7 @@ a {
 a:active {
   color: unset;
 }
+
+* {
+  box-sizing: border-box;
+}

@@ -7,11 +7,14 @@ import "@/assets/styles/reset.css";
 import "virtual:svg-icons-register";
 import { Provider } from "react-redux";
 import store from "@/store";
+import { ToastProvider } from "@/components/ToastProvider";
 
 createRoot(document.getElementById("root")!).render(
   // <StrictMode>
   <Provider store={store}>
-    <App />
+    <ToastProvider>
+      <App />
+    </ToastProvider>
   </Provider>
   // </StrictMode>
 );

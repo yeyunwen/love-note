@@ -1,0 +1,102 @@
+.loginContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #fafafa;
+}
+
+.loginForm {
+  background-color: #ffffff;
+  border: 1px solid #dbdbdb;
+  padding: 40px;
+  width: 350px;
+  text-align: center;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  font-family: "Billabong", cursive;
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #dbdbdb;
+  border-radius: 3px;
+  background-color: #fafafa;
+}
+
+.button {
+  width: 100%;
+  padding: 10px;
+  background-color: #0095f6;
+  color: #ffffff;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.button:hover {
+  background-color: #007bb5;
+}
+
+.separator {
+  margin: 20px 0;
+  color: #8e8e8e;
+  font-size: 12px;
+  position: relative;
+}
+
+.separator::before,
+.separator::after {
+  content: "";
+  display: block;
+  width: 40%;
+  height: 1px;
+  background-color: #dbdbdb;
+  position: absolute;
+  top: 50%;
+}
+
+.separator::before {
+  left: 0;
+}
+
+.separator::after {
+  right: 0;
+}
+
+.facebookLogin {
+  background-color: #385185;
+  margin-top: 0;
+}
+
+.forgotPassword {
+  display: block;
+  margin-top: 20px;
+  color: #385185;
+  text-decoration: none;
+  font-size: 12px;
+}
+
+.forgotPassword:hover {
+  text-decoration: underline;
+}
+
+.errorMessageWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  .errorMessage {
+    color: #d93025;
+    font-size: 12px;
+    margin-top: 5px;
+    text-align: left;
+  }
+}

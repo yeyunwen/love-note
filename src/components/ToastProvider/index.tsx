@@ -36,7 +36,7 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({
 
   return (
     <ToastContext.Provider value={{ showToast }}>
-      <Toast.Provider swipeDirection="right">
+      <Toast.Provider swipeDirection="up">
         {children}
         <Toast.Root className={styles.Root} open={open} onOpenChange={setOpen}>
           <Toast.Title className={styles.Title}>{message}</Toast.Title>

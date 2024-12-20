@@ -3,7 +3,7 @@ import style from "./index.module.scss";
 import { throttle } from "lodash-es";
 
 export interface CardItem {
-  id: string | number;
+  id: number;
   url: string;
   height: number;
   title: string;

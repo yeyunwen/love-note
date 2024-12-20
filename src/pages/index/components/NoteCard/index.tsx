@@ -1,33 +1,36 @@
+import { NavLink } from "react-router-dom";
 import style from "./index.module.scss";
 
 type NoteCardProps = {
   detail: {
-    bgColor: string;
     title: string;
     author: string;
     imgHeight: number;
-    [key: string]: any;
+    url: string;
+    id: number;
   };
 };
 
 const NoteCard = (props: NoteCardProps) => {
   return (
     <div className={style.noteCardContainer}>
-      <div
+      <img
         className={style.noteCardImg}
+        src={props.detail.url}
         style={{
           height: `${props.detail.imgHeight}px`,
-          backgroundColor: props.detail.bgColor,
         }}
-      ></div>
-      <div className={style.noteCardFooter}>
-        <div className={style.title}>{props.detail.title}</div>
+      />
+      <div className={style.footer}>
+        <NavLink className={style.title} to={`/note/${props.detail.id}`}>
+          {props.detail.title}
+        </NavLink>
         <div className={style.authorWrapper}>
           <div className={style.author}>
             <div className={style.avatar} />
             <span className={style.name}>{props.detail.author}</span>
           </div>
-          <div className={style.noteCardInfoRight}>100</div>
+          <div className={style.likeWrapper}></div>
         </div>
       </div>
     </div>

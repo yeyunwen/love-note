@@ -2,6 +2,9 @@ import React from "react";
 import styles from "./index.module.scss";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { loginByEmailApi } from "@/api/auth";
+import { useAppDispatch } from "@/store/hooks";
+import { login } from "@/store/authSlice";
+import { useNavigate } from "react-router-dom";
 const ErrorMessage = ({ message }: { message: string }) => {
   return (
     <div className={styles.errorMessageWrapper}>
@@ -21,10 +24,13 @@ const Login: React.FC = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<LoginForm>();
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const onSubmit: SubmitHandler<LoginForm> = async (data) => {
     const res = await loginByEmailApi(data);
-    // TODO: 登录成功后跳转到首页
-    console.log("登录成功", res);
+    const { token } = res;
+    dispatch(login({ token }));
+    navigate("/");
   };
   return (
     <div className={styles.loginContainer}>
@@ -35,6 +41,7 @@ const Login: React.FC = () => {
             type="text"
             placeholder="邮箱"
             className={styles.input}
+            defaultValue="1571374338@qq.com"
             {...register("email", { required: true })}
           />
           {errors.email && <ErrorMessage message="邮箱是必填项" />}
@@ -43,6 +50,7 @@ const Login: React.FC = () => {
             placeholder="密码"
             className={styles.input}
             {...register("password", { required: true })}
+            defaultValue="123456"
           />
           {errors.password && <ErrorMessage message="密码是必填项" />}
           <button type="submit" className={styles.button}>

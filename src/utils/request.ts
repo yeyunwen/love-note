@@ -1,7 +1,13 @@
-import axios from "axios";
+import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
 import store from "@/store";
 import { logout } from "@/store/authSlice";
 import emitter from "@/utils/mitt";
+
+export interface ApiResponse<T> {
+  code: number;
+  data: T;
+  message?: string;
+}
 
 export enum ErrorCode {
   /** 未登录 */
@@ -12,17 +18,9 @@ export enum ErrorCode {
   服务器错误 = 500,
 }
 
-export const errorInfoMap = {
-  [ErrorCode.未登录]: {
-    message: "未登录",
-    redirect: "/login",
-  },
-  [ErrorCode.请求失败]: {
-    message: "请求失败",
-  },
-};
+export const SUCCESS_CODE = 200;
 
-const axiosInstance = axios.create({
+const axiosInstance: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_API,
   withCredentials: true,
   timeout: 30000,
@@ -39,28 +37,46 @@ axiosInstance.interceptors.request.use((config) => {
 
 axiosInstance.interceptors.response.use(
   (response) => {
-    if (response.status === ErrorCode.未登录) {
+    const { code, data, message } = response.data as ApiResponse<any>;
+
+    if (code === ErrorCode.未登录) {
       store.dispatch(logout());
-      window.location.href = errorInfoMap[ErrorCode.未登录].redirect;
+      window.location.href = "/login";
+      return Promise.reject(new Error(message));
     }
-    return response;
+
+    if (code !== SUCCESS_CODE) {
+      return Promise.reject(new Error(message));
+    }
+
+    return data;
   },
   (error) => {
     const { response } = error;
-    switch (response.status) {
-      case ErrorCode.未登录:
-        store.dispatch(logout());
-        window.location.href = errorInfoMap[ErrorCode.未登录].redirect;
-        break;
-      case ErrorCode.请求失败:
-        emitter.emit("showToast", response.data.message);
-        return Promise.reject(error);
-      case ErrorCode.服务器错误:
-        emitter.emit("showToast", response.data.message);
-        return Promise.reject(error);
+
+    if (response) {
+      switch (response.status) {
+        case ErrorCode.未登录: {
+          store.dispatch(logout());
+          window.location.href = "/login";
+          break;
+        }
+        case ErrorCode.请求失败: {
+          emitter.emit("showToast", response.data.message);
+          break;
+        }
+        case ErrorCode.服务器错误: {
+          emitter.emit("showToast", response.data.message);
+          break;
+        }
+      }
     }
     return Promise.reject(error);
   }
 );
 
-export default axiosInstance;
+const request = <T>(config: AxiosRequestConfig): Promise<T> => {
+  return axiosInstance(config) as Promise<T>;
+};
+
+export default request;

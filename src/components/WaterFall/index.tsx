@@ -146,7 +146,7 @@ const WaterFall = (props: WaterFallProps) => {
     const containerObserver = new ResizeObserver(
       throttle(() => {
         setCardWidth(computedCardWidth());
-      }, 1000)
+      }, 200)
     );
     if (waterFallRef.current) {
       containerObserver.observe(waterFallRef.current);

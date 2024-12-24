@@ -13,7 +13,10 @@ type NoteCardProps = {
 
 const NoteCard = (props: NoteCardProps) => {
   return (
-    <div className={style.noteCardContainer}>
+    <NavLink
+      className={style.noteCardContainer}
+      to={`/note/${props.detail.id}`}
+    >
       <img
         className={style.noteCardImg}
         src={props.detail.url}
@@ -22,9 +25,7 @@ const NoteCard = (props: NoteCardProps) => {
         }}
       />
       <div className={style.footer}>
-        <NavLink className={style.title} to={`/note/${props.detail.id}`}>
-          {props.detail.title}
-        </NavLink>
+        <div className={style.title}>{props.detail.title}</div>
         <div className={style.authorWrapper}>
           <div className={style.author}>
             <div className={style.avatar} />
@@ -33,7 +34,7 @@ const NoteCard = (props: NoteCardProps) => {
           <div className={style.likeWrapper}></div>
         </div>
       </div>
-    </div>
+    </NavLink>
   );
 };
 

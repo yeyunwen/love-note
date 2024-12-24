@@ -23,7 +23,7 @@ const routes: RouteObject[] = [
         element: <New />,
       },
       {
-        path: "/detail",
+        path: "/note/:id",
         element: <Detail />,
       },
     ],

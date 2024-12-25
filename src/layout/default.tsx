@@ -33,7 +33,9 @@ const NavList = () => {
 const DefaultLayout = () => {
   return (
     <section className={style.defaultLayout}>
-      <Outlet />
+      <main className={style.mainContainer}>
+        <Outlet />
+      </main>
       <nav className={style.navContainer}>
         <div className={style.navList}>
           <NavList />

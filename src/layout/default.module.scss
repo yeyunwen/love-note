@@ -1,9 +1,13 @@
 .defaultLayout {
   $navHeight: 48px;
   width: 100%;
-  height: calc(100vh - $navHeight);
+  height: 100vh;
+  overflow: hidden;
+  .mainContainer {
+    height: calc(100% - $navHeight);
+  }
   .navContainer {
-    position: absolute;
+    position: fixed;
     bottom: 0;
     left: 0;
     right: 0;

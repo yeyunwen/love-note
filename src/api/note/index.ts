@@ -1,31 +1,32 @@
 import request from "@/utils/request";
 import { PaginationQueryDto, PaginationResponseDto } from "@/types/request";
 
-type GetNotesParams = PaginationQueryDto;
+export type GetNotesParams = PaginationQueryDto;
 
-interface Image {
+export interface Image {
   id: number;
   url: string;
   width: number;
   height: number;
   noteId: number;
-  createdTime: Date;
-  updatedTime: Date;
+  createdTime: string;
+  updatedTime: string;
 }
 
-// interface User {
-//   id: number;
-//   nickname: string;
-// }
+export interface NoteUser {
+  id: number;
+  username: string;
+  avatar: string;
+}
 
-interface Note {
+export interface Note {
   id: number;
   title: string;
   content: string;
   images: Image[];
-  // user: User;
-  createdTime: Date;
-  updatedTime: Date;
+  user: NoteUser;
+  createdTime: string;
+  updatedTime: string;
 }
 
 export const getNotesApi = (params: GetNotesParams) => {
@@ -33,5 +34,12 @@ export const getNotesApi = (params: GetNotesParams) => {
     url: "/note",
     method: "get",
     params,
+  });
+};
+
+export const getNoteDetailApi = (id: number) => {
+  return request<Note>({
+    url: `/note/${id}`,
+    method: "get",
   });
 };

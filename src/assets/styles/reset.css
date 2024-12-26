@@ -8,4 +8,13 @@ a:active {
 
 * {
   box-sizing: border-box;
+  /* 控制用户是否可以选中文本 */
+  -webkit-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  user-select: auto;
+  /* 隐藏滚动条 */
+  scrollbar-width: none;
+  /* 针对移动设备上的Webkit浏览器（如iOS Safari），设置点击高亮颜色。transparent 意味着点击时不显示任何高亮效果。 */
+  -webkit-tap-highlight-color: transparent;
 }

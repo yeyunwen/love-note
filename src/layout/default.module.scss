@@ -1,25 +1,39 @@
+$navBarHeight: 48px;
+$tabBarHeight: 48px;
+
 .defaultLayout {
-  $navHeight: 48px;
   width: 100%;
   height: 100vh;
+  padding-top: $navBarHeight;
   overflow: hidden;
-  .mainContainer {
-    height: calc(100% - $navHeight);
+
+  &.noNavBar {
+    padding-top: 0;
   }
-  .navContainer {
+  .navBarWrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: $navBarHeight;
+  }
+  .mainContainer {
+    height: calc(100% - $tabBarHeight);
+  }
+  .tabBarWrapper {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    height: $navHeight;
-    background: #fff;
-    border-top: 1px solid #ddd;
-    .navList {
+    height: $tabBarHeight;
+    .tabBarContainer {
       display: flex;
       justify-content: space-around;
       align-items: center;
       height: 100%;
-      .listItem {
+      background: #fff;
+      border-top: 1px solid #ddd;
+      .tabBarItem {
         color: rgba(51, 51, 51, 0.6);
         a.active {
           color: #333;

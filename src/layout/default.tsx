@@ -1,45 +1,39 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import style from "./default.module.scss";
-import SvgIcon from "@/components/SvgIcon";
+import TabBar from "./components/TabBar";
+import NavBar from "@/components/Navbar";
+import { type RouteMeta, useRouteMeta } from "@/router";
+import { useEffect, useState } from "react";
 
-const navList = [
-  {
-    name: "home",
-    path: "/",
-  },
-  {
-    name: "new",
-    path: "/new",
-  },
-];
-
-const NavList = () => {
-  return navList.map((item) => {
-    return (
-      <div className={style.listItem} key={item.path}>
-        <NavLink
-          to={item.path}
-          className={({ isActive }) => {
-            return isActive ? style.active : "";
-          }}
-        >
-          <SvgIcon name={item.name} />
-        </NavLink>
-      </div>
-    );
-  });
+const showNavBar = (meta: RouteMeta | undefined) => {
+  if (!meta) return false;
+  return meta.showNavBar !== false && meta.customNavBar !== true;
 };
 
 const DefaultLayout = () => {
+  const meta = useRouteMeta();
+  const [shouldShowNavBar, setShouldShowNavBar] = useState(true);
+
+  useEffect(() => {
+    setShouldShowNavBar(showNavBar(meta));
+  }, [meta]);
   return (
-    <section className={style.defaultLayout}>
+    <section
+      className={`${style.defaultLayout} ${
+        !shouldShowNavBar ? style.noNavBar : ""
+      }`}
+    >
+      {/* 根据 meta.showNavBar 判断是否显示 NavBar */}
+      {shouldShowNavBar && (
+        <div className={style.navBarWrapper}>
+          <NavBar title={meta?.title} />
+        </div>
+      )}
       <main className={style.mainContainer}>
         <Outlet />
       </main>
-      <nav className={style.navContainer}>
-        <div className={style.navList}>
-          <NavList />
-        </div>
+      <nav className={style.tabBarWrapper}>
+        <TabBar />
       </nav>
     </section>
   );

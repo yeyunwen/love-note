@@ -1,0 +1,31 @@
+$navBarHeight: 48px;
+
+.navBarContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: $navBarHeight;
+
+  .navBarLeft,
+  .navBarRight {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .navBarLeft {
+    left: 0;
+  }
+  .navBarRight {
+    right: 0;
+  }
+
+  .navBarCenter {
+    max-width: 60%;
+    margin: 0 auto;
+    text-align: center;
+  }
+}

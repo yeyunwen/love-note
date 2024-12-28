@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { getNoteDetailApi, Note } from "@/api/note";
@@ -6,9 +6,12 @@ import { formatSpecialDate } from "@/utils/formatSpecialDate";
 
 import "swiper/css";
 import style from "./index.module.scss";
+import NavBar from "@/components/Navbar";
+import SvgIcon from "@/components/SvgIcon";
 
 const Detail: React.FC = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [note, setNote] = useState<Note | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   useEffect(() => {
@@ -22,12 +25,29 @@ const Detail: React.FC = () => {
 
   return (
     <div className={style.detailContainer}>
-      <div className={style.authorContainer}>
-        <div className={style.authorAvatar}>
-          <img src={note?.user.avatar} alt="" />
-        </div>
-        <div className={style.authorName}>{note?.user.username}</div>
-      </div>
+      <NavBar
+        customLeft={
+          <div
+            className={style.authorContainer}
+            onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+              e.stopPropagation();
+            }}
+          >
+            <div
+              onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+                e.stopPropagation();
+                navigate(-1);
+              }}
+            >
+              <SvgIcon name="back" />
+            </div>
+            <div className={style.authorAvatar}>
+              <img src={note?.user.avatar} alt="" />
+            </div>
+            <div className={style.authorName}>{note?.user.username}</div>
+          </div>
+        }
+      />
       <div className={style.mediaContainer}>
         <Swiper
           className={style.swiperContainer}

@@ -5,6 +5,7 @@ type NoteCardProps = {
   detail: {
     title: string;
     author: string;
+    avatar: string;
     imgHeight: number;
     url: string;
     id: number;
@@ -28,10 +29,9 @@ const NoteCard = (props: NoteCardProps) => {
         <div className={style.title}>{props.detail.title}</div>
         <div className={style.authorWrapper}>
           <div className={style.author}>
-            <div className={style.avatar} />
+            <img className={style.avatar} src={props.detail.avatar} />
             <span className={style.name}>{props.detail.author}</span>
           </div>
-          <div className={style.likeWrapper}></div>
         </div>
       </div>
     </NavLink>

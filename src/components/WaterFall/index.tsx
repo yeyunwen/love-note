@@ -8,6 +8,7 @@ export interface CardItem {
   height: number;
   title: string;
   author: string;
+  avatar: string;
   [key: string]: any;
 }
 

@@ -12,8 +12,9 @@ const Index = () => {
       url: i.images[0].url,
       width: i.images[0].width,
       height: i.images[0].height,
-      author: "admin",
+      author: i.user.username,
       title: i.title,
+      avatar: i.user.avatar,
     }));
   };
 

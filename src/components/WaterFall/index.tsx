@@ -55,13 +55,12 @@ const WaterFall = (props: WaterFallProps) => {
   const [allFetchList, setAllFetchList] = useState<CardItem[]>([]); // 全量获取的数据
   const [allPosList, setAllPosList] = useState<CardPos[]>([]); // 全量获取的数据的位置
   const [columnHeightList, setColumnHeightList] = useState<number[]>( // 每列的当前的高度
-    new Array(props.column).fill(0)
+    new Array(props.column).fill(0),
   );
   const [needInitColumn, setNeedInitColumn] = useState(false);
   const computedCardWidth = () => {
     if (waterFallRef && waterFallRef.current) {
-      const width =
-        waterFallRef.current.clientWidth - (props.column! - 1) * props.gap!;
+      const width = waterFallRef.current.clientWidth - (props.column! - 1) * props.gap!;
       return width / props.column!;
     }
     return 0;
@@ -147,7 +146,7 @@ const WaterFall = (props: WaterFallProps) => {
     const containerObserver = new ResizeObserver(
       throttle(() => {
         setCardWidth(computedCardWidth());
-      }, 200)
+      }, 200),
     );
     if (waterFallRef.current) {
       containerObserver.observe(waterFallRef.current);
@@ -167,11 +166,7 @@ const WaterFall = (props: WaterFallProps) => {
       console.log("update fetch", fetchList);
 
       const realPos = computedRealPos(fetchList);
-      setAllPosList(
-        allPosList
-          .slice(0, allPosList.length - fetchList.length)
-          .concat(realPos)
-      );
+      setAllPosList(allPosList.slice(0, allPosList.length - fetchList.length).concat(realPos));
     }
   }, [fetchList]);
 
@@ -188,11 +183,7 @@ const WaterFall = (props: WaterFallProps) => {
   }, [props.column, cardWidth]);
 
   return (
-    <div
-      className={style.waterFallContainer}
-      ref={waterFallRef}
-      onScroll={handleScroll}
-    >
+    <div className={style.waterFallContainer} ref={waterFallRef} onScroll={handleScroll}>
       <div className={style.waterFallList} ref={listRef}>
         {allFetchList.map((item, index) => {
           return (

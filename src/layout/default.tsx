@@ -18,11 +18,7 @@ const DefaultLayout = () => {
     setShouldShowNavBar(showNavBar(meta));
   }, [meta]);
   return (
-    <section
-      className={`${style.defaultLayout} ${
-        !shouldShowNavBar ? style.noNavBar : ""
-      }`}
-    >
+    <section className={`${style.defaultLayout} ${!shouldShowNavBar ? style.noNavBar : ""}`}>
       {/* 根据 meta.showNavBar 判断是否显示 NavBar */}
       {shouldShowNavBar && (
         <div className={style.navBarWrapper}>

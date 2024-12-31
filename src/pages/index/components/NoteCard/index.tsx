@@ -14,10 +14,7 @@ type NoteCardProps = {
 
 const NoteCard = (props: NoteCardProps) => {
   return (
-    <NavLink
-      className={style.noteCardContainer}
-      to={`/note/${props.detail.id}`}
-    >
+    <NavLink className={style.noteCardContainer} to={`/note/${props.detail.id}`}>
       <img
         className={style.noteCardImg}
         src={props.detail.url}

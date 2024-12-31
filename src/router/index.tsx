@@ -1,9 +1,4 @@
-import {
-  createBrowserRouter,
-  RouteObject,
-  useLocation,
-  matchPath,
-} from "react-router-dom";
+import { createBrowserRouter, RouteObject, useLocation, matchPath } from "react-router-dom";
 import { DefaultLayout } from "../layout";
 import Index from "@/pages/index";
 import Login from "@/pages/login";
@@ -84,7 +79,7 @@ export const useRouteMeta = (): RouteMeta | undefined => {
 
   const findRoute = (
     routes: CustomRouteObject[],
-    pathname: string
+    pathname: string,
   ): CustomRouteObject | undefined => {
     for (const route of routes) {
       // 跳过布局路由的 meta

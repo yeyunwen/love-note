@@ -156,7 +156,7 @@ const WaterFall = (props: WaterFallProps) => {
             lastWidth.current = computedCardWidth();
             setCardWidth(computedCardWidth());
           }
-        }, 200)
+        }, 200),
       );
       containerObserverRef.current.observe(waterFallRef.current);
     }

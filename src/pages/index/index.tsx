@@ -11,21 +11,18 @@ const Index = () => {
   const [column, setColumn] = useState(0);
 
   // 使用 useCallback 缓存 getData 函数
-  const getData = useCallback(
-    async (page: number, limit: number): Promise<CardItem[]> => {
-      const { items: notes } = await getNotesApi({ page, limit });
-      return notes.map((i) => ({
-        id: i.id,
-        url: i.images[0].url,
-        width: i.images[0].width,
-        height: i.images[0].height,
-        author: i.user.username,
-        title: i.title,
-        avatar: i.user.avatar,
-      }));
-    },
-    []
-  );
+  const getData = useCallback(async (page: number, limit: number): Promise<CardItem[]> => {
+    const { items: notes } = await getNotesApi({ page, limit });
+    return notes.map((i) => ({
+      id: i.id,
+      url: i.images[0].url,
+      width: i.images[0].width,
+      height: i.images[0].height,
+      author: i.user.username,
+      title: i.title,
+      avatar: i.user.avatar,
+    }));
+  }, []);
 
   const changeColumn = (width: number) => {
     let column = 2;

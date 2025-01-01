@@ -18,6 +18,6 @@ createRoot(document.getElementById("root")!).render(
         <App />
       </ToastProvider>
     </AliveScope>
-  </Provider>
+  </Provider>,
   // </StrictMode>
 );

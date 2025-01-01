@@ -47,6 +47,8 @@ const WaterFall = (props: WaterFallProps) => {
 
   const waterFallRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const containerObserverRef = useRef<ResizeObserver | null>(null);
+  const lastWidth = useRef(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isFinish, setIsFinish] = useState(false);
   const [curPage, setCurPage] = useState(1);
@@ -143,19 +145,29 @@ const WaterFall = (props: WaterFallProps) => {
 
   // 挂载初始化
   useEffect(() => {
+    console.log("WaterFall 挂载初始化");
     fetchData(curPage, props.pageSize!);
-    const containerObserver = new ResizeObserver(
-      throttle(() => {
-        setCardWidth(computedCardWidth());
-      }, 200)
-    );
-    if (waterFallRef.current) {
-      containerObserver.observe(waterFallRef.current);
 
-      return () => {
-        containerObserver.disconnect();
-      };
+    if (waterFallRef.current && !containerObserverRef.current) {
+      containerObserverRef.current = new ResizeObserver(
+        throttle((entries) => {
+          const observerWidth = entries[0].target.clientWidth;
+          // 防止KeepAlive 失活时，不必要的计算
+          if (observerWidth > 0) {
+            lastWidth.current = computedCardWidth();
+            setCardWidth(computedCardWidth());
+          }
+        }, 200)
+      );
+      containerObserverRef.current.observe(waterFallRef.current);
     }
+
+    return () => {
+      if (containerObserverRef.current) {
+        containerObserverRef.current.disconnect();
+        containerObserverRef.current = null;
+      }
+    };
   }, []);
 
   /**
@@ -181,6 +193,7 @@ const WaterFall = (props: WaterFallProps) => {
    * 全量计算 pos
    */
   useEffect(() => {
+    console.log("WaterFall 父组件宽度改变 column");
     const imgPos = computedImgHeight(allFetchList);
     setAllPosList(imgPos);
     setFetchList([...allFetchList]);

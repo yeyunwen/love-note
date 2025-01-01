@@ -72,7 +72,7 @@ axiosInstance.interceptors.response.use(
       }
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 const request = <T>(config: AxiosRequestConfig): Promise<T> => {

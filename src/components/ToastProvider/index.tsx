@@ -6,13 +6,9 @@ export interface ToastContextType {
   showToast: (msg: string) => void;
 }
 
-export const ToastContext = createContext<ToastContextType | undefined>(
-  undefined
-);
+export const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
-export const ToastProvider: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
+export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
 

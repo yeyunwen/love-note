@@ -49,11 +49,7 @@ const Detail: React.FC = () => {
         }
       />
       <div className={style.mediaContainer}>
-        <Swiper
-          className={style.swiperContainer}
-          slidesPerView={1}
-          onSlideChange={onSlideChange}
-        >
+        <Swiper className={style.swiperContainer} slidesPerView={1} onSlideChange={onSlideChange}>
           {note?.images.map((image) => (
             <SwiperSlide key={image.id}>
               <div className={style.imgContainer}>
@@ -80,9 +76,7 @@ const Detail: React.FC = () => {
         <div className={style.contentTitle}>{note?.title}</div>
         <div className={style.contentDesc}>{note?.content}</div>
         <div className={style.bottomContainer}>
-          <div className={style.date}>
-            编辑于 {formatSpecialDate(note?.updatedTime)}
-          </div>
+          <div className={style.date}>编辑于 {formatSpecialDate(note?.updatedTime)}</div>
         </div>
       </div>
     </div>

@@ -50,9 +50,7 @@ const WaterFall = (props: WaterFallProps) => {
   const [dataList, setDataList] = useState<CardItem[]>([]);
   const [posList, setPosList] = useState<CardPos[]>([]);
   const [cardWidth, setCardWidth] = useState(0);
-  const [columnHeight, setColumnHeight] = useState(
-    new Array(props.column).fill(0)
-  );
+  const [columnHeight, setColumnHeight] = useState(new Array(props.column).fill(0));
   const [imageHeightComputed, setImageHeightComputed] = useState(false);
   const [fetchList, setFetchList] = useState<CardItem[]>([]);
 
@@ -67,8 +65,7 @@ const WaterFall = (props: WaterFallProps) => {
 
   const computedCardWidth = () => {
     if (waterFallRef.current) {
-      const width =
-        waterFallRef.current.clientWidth - (props.column! - 1) * props.gap!;
+      const width = waterFallRef.current.clientWidth - (props.column! - 1) * props.gap!;
       return width / props.column!;
     }
     return 0;
@@ -87,15 +84,10 @@ const WaterFall = (props: WaterFallProps) => {
     });
   };
 
-  const computedRealPos = (
-    list: CardItem[],
-    columnHeightList?: number[]
-  ): CardPos[] => {
+  const computedRealPos = (list: CardItem[], columnHeightList?: number[]): CardPos[] => {
     const domList = Array.from(listRef.current!.children).slice(-list.length);
     const cardWidth = computedCardWidth();
-    const tempColumnHeight = columnHeightList
-      ? columnHeightList
-      : [...columnHeight];
+    const tempColumnHeight = columnHeightList ? columnHeightList : [...columnHeight];
     const result = list.map((item, i) => {
       const cardHeight = domList[i].getBoundingClientRect().height;
       const minColumn = Math.min(...tempColumnHeight);
@@ -143,9 +135,7 @@ const WaterFall = (props: WaterFallProps) => {
   useEffect(() => {
     if (imageHeightComputed) {
       const realPos = computedRealPos(fetchList);
-      setPosList(
-        posList.slice(0, posList.length - fetchList.length).concat(realPos)
-      );
+      setPosList(posList.slice(0, posList.length - fetchList.length).concat(realPos));
       setImageHeightComputed(false);
     }
   }, [imageHeightComputed]);
@@ -161,11 +151,7 @@ const WaterFall = (props: WaterFallProps) => {
   }, [props.column]);
 
   return (
-    <div
-      className={style.waterFallContainer}
-      ref={waterFallRef}
-      onScroll={handleScroll}
-    >
+    <div className={style.waterFallContainer} ref={waterFallRef} onScroll={handleScroll}>
       <div className={style.waterFallList} ref={listRef}>
         {dataList.map((item, index) => {
           return (

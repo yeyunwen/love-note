@@ -12,7 +12,7 @@ export interface RouteMeta {
   requiresAuth?: boolean;
   showNavBar?: boolean;
   customNavBar?: boolean;
-  roles?: string[];
+  showTabBar?: boolean;
 }
 
 // 扩展 RouteObject 类型
@@ -53,15 +53,12 @@ const routes: CustomRouteObject[] = [
       },
       {
         path: "/new",
-        element: (
-          <KeepAlive name="NewPage" cacheKey="NewPage">
-            <New />
-          </KeepAlive>
-        ),
+        element: <New />,
         meta: {
           title: "新建笔记",
           requiresAuth: true,
           showNavBar: true,
+          showTabBar: false,
         },
       },
       {

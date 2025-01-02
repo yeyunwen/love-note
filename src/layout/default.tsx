@@ -10,12 +10,19 @@ const showNavBar = (meta: RouteMeta | undefined) => {
   return meta.showNavBar !== false && meta.customNavBar !== true;
 };
 
+const showTabBar = (meta: RouteMeta | undefined) => {
+  if (!meta) return false;
+  return meta.showTabBar !== false;
+};
+
 const DefaultLayout = () => {
   const meta = useRouteMeta();
   const [shouldShowNavBar, setShouldShowNavBar] = useState(true);
+  const [shouldShowTabBar, setShouldShowTabBar] = useState(true);
 
   useEffect(() => {
     setShouldShowNavBar(showNavBar(meta));
+    setShouldShowTabBar(showTabBar(meta));
   }, [meta]);
   return (
     <section className={`${style.defaultLayout} ${!shouldShowNavBar ? style.noNavBar : ""}`}>
@@ -28,9 +35,11 @@ const DefaultLayout = () => {
       <main className={style.mainContainer}>
         <Outlet />
       </main>
-      <nav className={style.tabBarWrapper}>
-        <TabBar />
-      </nav>
+      {shouldShowTabBar && (
+        <nav className={style.tabBarWrapper}>
+          <TabBar />
+        </nav>
+      )}
     </section>
   );
 };

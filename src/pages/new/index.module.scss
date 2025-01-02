@@ -1,0 +1,108 @@
+$imgContainerHeight: 72px;
+
+.newContainer {
+  padding: 0 12px;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+
+  .imgContainer {
+    display: flex;
+    gap: 10px;
+    margin: 12px 0;
+    padding: 0 12px;
+    width: calc(100% + 24px);
+    height: calc($imgContainerHeight + 10px);
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    // 添加这些属性来支持触摸拖动
+    -webkit-overflow-scrolling: touch; // iOS 滚动惯性
+    scroll-behavior: smooth; // 平滑滚动
+    touch-action: pan-x; // 允许水平平移
+    cursor: grab; // 显示抓取光标
+    // 当用户按住时显示抓取状态
+    &:active {
+      cursor: grabbing;
+    }
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .imgItem {
+      flex-shrink: 0;
+      width: $imgContainerHeight;
+      height: $imgContainerHeight;
+      border-radius: 10px;
+      overflow: hidden;
+      background-color: #f5f5f5;
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .addImg {
+      flex-shrink: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: $imgContainerHeight;
+      height: $imgContainerHeight;
+      border-radius: 10px;
+      border: 1px solid #f0ecec;
+      background-color: #f5f5f5;
+    }
+  }
+
+  .contentContainer {
+    .titleWrapper {
+      margin-bottom: 12px;
+      padding: 0 12px;
+      .titleInput {
+        width: 100%;
+        height: 40px;
+      }
+    }
+    .descWrapper {
+      margin-bottom: 24px;
+      padding: 0 12px;
+      .descInput {
+        width: 100%;
+        height: 500px;
+      }
+    }
+  }
+  .submitBtnWrapper {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 0 12px 24px;
+    .submitBtn {
+      margin-top: 24px;
+      width: 100%;
+      height: 40px;
+      background-color: #ff4d4f;
+      color: #fff;
+      border-radius: 10px;
+      border: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}
+
+input {
+  border: none;
+  outline: none;
+}
+
+textarea {
+  border: none;
+  outline: none;
+  resize: none;
+}

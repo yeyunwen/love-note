@@ -21,8 +21,8 @@ export interface NoteUser {
 
 export interface Note {
   id: number;
-  title: string;
-  content: string;
+  title: string | null;
+  content: string | null;
   images: Image[];
   user: NoteUser;
   createdTime: string;

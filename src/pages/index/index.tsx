@@ -19,7 +19,7 @@ const Index = () => {
       width: i.images[0].width,
       height: i.images[0].height,
       author: i.user.username,
-      title: i.title,
+      title: i.title ?? "",
       avatar: i.user.avatar,
     }));
   }, []);

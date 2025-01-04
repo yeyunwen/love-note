@@ -3,7 +3,7 @@ import style from "./index.module.scss";
 
 type NoteCardProps = {
   detail: {
-    title: string;
+    title?: string;
     author: string;
     avatar: string;
     imgHeight: number;

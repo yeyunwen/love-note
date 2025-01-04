@@ -6,7 +6,7 @@ export interface CardItem {
   id: number;
   url: string;
   height: number;
-  title: string;
+  title?: string;
   author: string;
   avatar: string;
   [key: string]: any;

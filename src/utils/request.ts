@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
 import store from "@/store";
 import { logout } from "@/store/authSlice";
-import emitter from "@/utils/mitt";
+import RadixToast from "@/components/RadixToast";
 
 export interface ApiResponse<T> {
   code: number;
@@ -62,11 +62,11 @@ axiosInstance.interceptors.response.use(
           break;
         }
         case ErrorCode.请求失败: {
-          emitter.emit("showToast", response.data.message);
+          RadixToast.show(response.data.message);
           break;
         }
         case ErrorCode.服务器错误: {
-          emitter.emit("showToast", response.data.message);
+          RadixToast.show(response.data.message);
           break;
         }
       }

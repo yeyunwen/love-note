@@ -2,13 +2,13 @@ import React, { createContext, useState, ReactNode, useEffect } from "react";
 import * as Toast from "@radix-ui/react-toast";
 import emitter from "@/utils/mitt";
 import styles from "./index.module.css";
-export interface ToastContextType {
+export interface RadixToastContextType {
   showToast: (msg: string) => void;
 }
 
-export const ToastContext = createContext<ToastContextType | undefined>(undefined);
+export const RadixToastContext = createContext<RadixToastContextType | undefined>(undefined);
 
-export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const RadixToastProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -31,14 +31,20 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   }, []);
 
   return (
-    <ToastContext.Provider value={{ showToast }}>
-      <Toast.Provider swipeDirection="up">
+    <RadixToastContext.Provider value={{ showToast }}>
+      <Toast.Provider swipeDirection="up" duration={3000}>
         {children}
         <Toast.Root className={styles.Root} open={open} onOpenChange={setOpen}>
           <Toast.Title className={styles.Title}>{message}</Toast.Title>
         </Toast.Root>
         <Toast.Viewport className={styles.Viewport} />
       </Toast.Provider>
-    </ToastContext.Provider>
+    </RadixToastContext.Provider>
   );
+};
+
+export default {
+  show: (message: string) => {
+    emitter.emit("showToast", message);
+  },
 };

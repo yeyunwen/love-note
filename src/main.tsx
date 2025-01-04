@@ -9,14 +9,15 @@ import "virtual:svg-icons-register";
 import { Provider } from "react-redux";
 import { AliveScope } from "react-activation";
 import store from "@/store";
-import { ToastProvider } from "@/components/ToastProvider";
+import { RadixToastProvider } from "@/components/RadixToast";
+
 createRoot(document.getElementById("root")!).render(
   // <StrictMode>
   <Provider store={store}>
     <AliveScope>
-      <ToastProvider>
+      <RadixToastProvider>
         <App />
-      </ToastProvider>
+      </RadixToastProvider>
     </AliveScope>
   </Provider>,
   // </StrictMode>

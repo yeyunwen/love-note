@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import style from "./index.module.scss";
 import { throttle } from "lodash-es";
+import { orbit } from "ldrs";
+
+orbit.register();
 
 export interface CardItem {
   id: number;
@@ -48,10 +51,11 @@ const WaterFall = (props: WaterFallProps) => {
   const waterFallRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const containerObserverRef = useRef<ResizeObserver | null>(null);
+  const loadingRef = useRef<HTMLDivElement>(null);
   const lastWidth = useRef(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isFinish, setIsFinish] = useState(false);
-  const [curPage, setCurPage] = useState(1);
+  const [, setCurPage] = useState(0);
   const [cardWidth, setCardWidth] = useState(0);
   const [fetchList, setFetchList] = useState<CardItem[]>([]); // 增量获取的数据
   const [allFetchList, setAllFetchList] = useState<CardItem[]>([]); // 全量获取的数据
@@ -73,15 +77,18 @@ const WaterFall = (props: WaterFallProps) => {
       return;
     }
     setIsLoading(true);
-    const data = await props.request(page, pageSize);
-    if (data.length < pageSize) {
-      setIsFinish(true);
+    try {
+      const data = await props.request(page, pageSize);
+      if (data.length < pageSize) {
+        setIsFinish(true);
+      }
+      setFetchList(data);
+      setAllFetchList((prev) => [...prev, ...data]);
+      const imgPos = computedImgHeight(data);
+      setAllPosList((prev) => [...prev, ...imgPos]);
+    } finally {
+      setIsLoading(false);
     }
-    setFetchList(data);
-    setAllFetchList([...allFetchList, ...data]);
-    const imgPos = computedImgHeight(data);
-    setAllPosList([...allPosList, ...imgPos]);
-    setIsLoading(false);
   };
 
   const computedImgHeight = (list: CardItem[]): CardPos[] => {
@@ -130,23 +137,8 @@ const WaterFall = (props: WaterFallProps) => {
     return result;
   };
 
-  const handleScroll = throttle(() => {
-    if (waterFallRef.current) {
-      const { scrollTop, clientHeight, scrollHeight } = waterFallRef.current;
-      const bottomGap = scrollHeight - scrollTop - clientHeight;
-
-      if (bottomGap <= props.bottomGapToFetch!) {
-        setCurPage(curPage + 1);
-        fetchData(curPage + 1, props.pageSize!);
-      }
-    }
-  }, 100);
-
   // 挂载初始化
   useEffect(() => {
-    console.log("WaterFall 挂载初始化");
-    fetchData(curPage, props.pageSize!);
-
     if (waterFallRef.current && !containerObserverRef.current) {
       containerObserverRef.current = new ResizeObserver(
         throttle((entries) => {
@@ -161,11 +153,32 @@ const WaterFall = (props: WaterFallProps) => {
       containerObserverRef.current.observe(waterFallRef.current);
     }
 
+    const loadingObserver = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !isLoading && !isFinish) {
+          setCurPage((prev) => {
+            const nextPage = prev + 1;
+            fetchData(nextPage, props.pageSize!);
+            return nextPage;
+          });
+        }
+      },
+      {
+        root: null,
+        threshold: 0,
+      },
+    );
+
+    if (loadingRef.current) {
+      loadingObserver.observe(loadingRef.current);
+    }
+
     return () => {
       if (containerObserverRef.current) {
         containerObserverRef.current.disconnect();
         containerObserverRef.current = null;
       }
+      loadingObserver.disconnect();
     };
   }, []);
 
@@ -196,8 +209,12 @@ const WaterFall = (props: WaterFallProps) => {
   }, [props.column, cardWidth]);
 
   return (
-    <div className={style.waterFallContainer} ref={waterFallRef} onScroll={handleScroll}>
-      <div className={style.waterFallList} ref={listRef}>
+    <div ref={waterFallRef} className={style.waterFallContainer}>
+      <div
+        ref={listRef}
+        className={style.waterFallList}
+        style={{ height: `${Math.max(...columnHeightList)}px` }}
+      >
         {allFetchList.map((item, index) => {
           return (
             <section
@@ -219,6 +236,16 @@ const WaterFall = (props: WaterFallProps) => {
             </section>
           );
         })}
+      </div>
+      <div ref={loadingRef} className={style.waterFallLoading}>
+        {isFinish ? (
+          <span>没有更多数据了</span>
+        ) : (
+          <>
+            <l-orbit size="30" speed="1.5" color="#9A9898"></l-orbit>
+            <span>加载中</span>
+          </>
+        )}
       </div>
     </div>
   );

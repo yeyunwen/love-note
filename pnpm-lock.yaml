@@ -19,6 +19,9 @@ importers:
       dayjs:
         specifier: ^1.11.13
         version: 1.11.13
+      ldrs:
+        specifier: ^1.0.2
+        version: 1.0.2
       mitt:
         specifier: ^3.0.1
         version: 3.0.1
@@ -2998,6 +3001,12 @@ packages:
         integrity: sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==,
       }
     engines: { node: ">=0.10.0" }
+
+  ldrs@1.0.2:
+    resolution:
+      {
+        integrity: sha512-sYJmivdkIiHrUEqTrEWccBoLdaENpzbzkABI5rk8rRxTXrg9i2xVuDvUUuhOhJY3RmQyaoxs046pM1DCRdcIpg==,
+      }
 
   levn@0.4.1:
     resolution:
@@ -6157,6 +6166,8 @@ snapshots:
   kind-of@5.1.0: {}
 
   kind-of@6.0.3: {}
+
+  ldrs@1.0.2: {}
 
   levn@0.4.1:
     dependencies:

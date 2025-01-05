@@ -3,25 +3,29 @@ import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { getNoteDetailApi, Note } from "@/api/note";
 import { formatSpecialDate } from "@/utils/formatSpecialDate";
+import NavBar from "@/components/Navbar";
+import SvgIcon from "@/components/SvgIcon";
+import { ImagePreview } from "@/components/ImagePreview";
 
 import "swiper/css";
 import style from "./index.module.scss";
-import NavBar from "@/components/Navbar";
-import SvgIcon from "@/components/SvgIcon";
 
 const Detail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [note, setNote] = useState<Note | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [previewVisible, setPreviewVisible] = useState(false);
+
+  const onSlideChange = (swiper: import("swiper").Swiper) => {
+    setActiveIndex(swiper.activeIndex);
+  };
+
   useEffect(() => {
     getNoteDetailApi(Number(id)).then((res) => {
       setNote(res);
     });
   }, [id]);
-  const onSlideChange = (swiper: import("swiper").Swiper) => {
-    setActiveIndex(swiper.activeIndex);
-  };
 
   return (
     <div className={style.detailContainer}>
@@ -48,7 +52,7 @@ const Detail: React.FC = () => {
           </div>
         }
       />
-      <div className={style.mediaContainer}>
+      <div className={style.mediaContainer} onClick={() => setPreviewVisible(true)}>
         <Swiper className={style.swiperContainer} slidesPerView={1} onSlideChange={onSlideChange}>
           {note?.images.map((image) => (
             <SwiperSlide key={image.id}>
@@ -79,6 +83,12 @@ const Detail: React.FC = () => {
           <div className={style.date}>编辑于 {formatSpecialDate(note?.updatedTime)}</div>
         </div>
       </div>
+      <ImagePreview
+        visible={previewVisible}
+        defaultIndex={activeIndex}
+        imageList={note?.images.map((image) => image.url) || []}
+        onClose={() => setPreviewVisible(false)}
+      />
     </div>
   );
 };

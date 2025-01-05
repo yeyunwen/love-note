@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { uploadImgsApi, type UploadImgsRes, createNoteApi } from "@/api/new";
 import { useNavigate } from "react-router-dom";
 import Toast from "@/components/Toast";
+import { ImagePreview } from "@/components/ImagePreview";
 
 const New = () => {
   const titleLimit = 20;
@@ -13,6 +14,8 @@ const New = () => {
   const [imgs, setImgs] = useState<UploadImgsRes[]>([]);
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
+  const [previewVisible, setPreviewVisible] = useState<boolean>(false);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
   const navigate = useNavigate();
 
   const clickAddImg = () => {
@@ -56,11 +59,43 @@ const New = () => {
     setTitle("");
   };
 
+  const handlePreview = (index: number) => {
+    setPreviewVisible(true);
+    setCurrentIndex(index);
+  };
+
+  const handleClosePreview = () => {
+    setPreviewVisible(false);
+  };
+
+  const handleChangePreview = (swiper: import("swiper").Swiper) => {
+    setCurrentIndex(swiper.activeIndex);
+  };
+
+  const handleSetCover = () => {
+    const curImg = imgs[currentIndex];
+    const otherImgs = imgs.toSpliced(currentIndex, 1);
+    setImgs([curImg, ...otherImgs]);
+    setCurrentIndex(0);
+  };
+
+  const handleDeleteImg = () => {
+    const otherImgs = imgs.toSpliced(currentIndex, 1);
+    setImgs(otherImgs);
+
+    if (otherImgs.length === 0) {
+      setPreviewVisible(false);
+      return;
+    }
+
+    setCurrentIndex(Math.min(currentIndex, otherImgs.length - 1));
+  };
+
   return (
     <div className={style.newContainer}>
       <div className={style.imgContainer}>
-        {imgs.map((img) => (
-          <div key={img.id} className={style.imgItem}>
+        {imgs.map((img, index) => (
+          <div key={img.id} className={style.imgItem} onClick={() => handlePreview(index)}>
             <img src={img.url} alt={img.originalname} />
           </div>
         ))}
@@ -106,6 +141,27 @@ const New = () => {
       <div className={style.submitBtnWrapper} onClick={handleSubmit}>
         <button className={style.submitBtn}>发布笔记</button>
       </div>
+      <ImagePreview
+        visible={previewVisible}
+        imageList={imgs.map((img) => img.url)}
+        defaultIndex={currentIndex}
+        closeIcon={true}
+        onClose={handleClosePreview}
+        onChange={handleChangePreview}
+      >
+        <div className={style.operateContainer}>
+          (
+          {currentIndex !== 0 && (
+            <div className={style.operateItem} onClick={handleSetCover}>
+              设置为封面
+            </div>
+          )}
+          )
+          <div className={style.operateItem} onClick={handleDeleteImg}>
+            删除
+          </div>
+        </div>
+      </ImagePreview>
     </div>
   );
 };

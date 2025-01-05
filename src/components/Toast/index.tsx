@@ -19,15 +19,23 @@ interface ToastProps {
 }
 
 export const Toast: React.FC<ToastProps> = memo(({ message, duration = 2000, id }) => {
-  useEffect(() => {
-    setTimeout(() => {
-      if (id) {
-        const element = document.getElementById(id);
-        if (element && element.parentNode) {
-          element.parentNode.removeChild(element);
-        }
+  const clearToast = () => {
+    if (id) {
+      const element = document.getElementById(id);
+      if (element && element.parentNode) {
+        element.parentNode.removeChild(element);
       }
+    }
+  };
+
+  const startCloseTimer = () => {
+    setTimeout(() => {
+      clearToast();
     }, duration);
+  };
+
+  useEffect(() => {
+    startCloseTimer();
   }, []);
 
   return (

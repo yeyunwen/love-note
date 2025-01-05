@@ -1,0 +1,11 @@
+$popupZIndex: 1000;
+
+.popupContainer {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-height: 10%;
+  background-color: #fff;
+  z-index: $popupZIndex;
+}

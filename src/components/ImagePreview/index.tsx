@@ -56,14 +56,11 @@ export const ImagePreview: React.FC<ImagePreviewProps> = (props) => {
 
   useEffect(() => {
     setInnerVisible(visible);
-  }, [visible]);
-
-  useEffect(() => {
     setActiveIndex(defaultIndex as number);
     if (swiperRef.current) {
       swiperRef.current.slideTo(defaultIndex as number);
     }
-  }, [defaultIndex]);
+  }, [defaultIndex, visible]);
 
   return (
     <Popup className={styles.imagePreviewContainer} visible={innerVisible} onClick={handleClick}>

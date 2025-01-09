@@ -17,12 +17,16 @@ const transformNoteToWaterFallData = (note: Note): WaterFallData<Note> => ({
 const Index: React.FC = () => {
   const [data, setData] = useState<WaterFallData<Note>[]>([]);
   const [isFinish, setIsFinish] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [column, setColumn] = useState(2);
   const containerRef = useRef<HTMLDivElement>(null);
   const pageRef = useRef(1);
 
   const handleReachBottom = useCallback(async () => {
+    if (isFinish || isLoading) return;
+
     try {
+      setIsLoading(true);
       const { items: notes, meta } = await getNotesApi({
         page: pageRef.current,
         limit: 5,
@@ -38,8 +42,10 @@ const Index: React.FC = () => {
       setData((prev) => [...prev, ...newData]);
     } catch (error) {
       console.error("Failed to fetch notes:", error);
+    } finally {
+      setIsLoading(false);
     }
-  }, []);
+  }, [isFinish, isLoading]);
 
   // 监听容器宽度变化
   useEffect(() => {
@@ -65,11 +71,6 @@ const Index: React.FC = () => {
     return () => observer.disconnect();
   }, []);
 
-  // // 初始加载
-  // useEffect(() => {
-  //   handleReachBottom();
-  // }, []);
-
   return (
     <div className={style.indexContainer} ref={containerRef}>
       <WaterFall<Note>
@@ -77,6 +78,7 @@ const Index: React.FC = () => {
         column={column}
         gap={10}
         isFinish={isFinish}
+        isLoading={isLoading}
         onReachBottom={handleReachBottom}
       >
         {({ sourceData, imgHeight }) => (

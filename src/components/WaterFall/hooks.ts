@@ -38,7 +38,7 @@ export function useWaterFallLayout<T>(
     if (!containerRef.current) return 0;
     const width = containerRef.current.clientWidth - (column - 1) * gap;
     return width / column;
-  }, [column, gap]);
+  }, [column, gap, containerRef]);
 
   const computePositions = useCallback(
     (cardWidth: number) => {
@@ -82,7 +82,7 @@ export function useWaterFallLayout<T>(
 
     dispatch({ type: "SET_POSITIONS", payload: newPositions });
     dispatch({ type: "SET_COLUMN_HEIGHTS", payload: columnHeights });
-  }, [column, gap, state.cardWidth, state.positions]);
+  }, [column, gap, state.cardWidth, state.positions, listRef]);
 
   // 初始布局计算
   const computeLayout = useCallback(() => {
@@ -110,16 +110,14 @@ export function useWaterFallLayout<T>(
         observerRef.current = null;
       }
     };
-  }, [computeLayout]);
+  }, [computeLayout, containerRef]);
 
   // 计算真实位置
   useEffect(() => {
     if (state.status === "computing") {
-      // 使用 requestAnimationFrame 确保 DOM 已更新
-      requestAnimationFrame(() => {
-        computeRealPositions();
-        dispatch({ type: "SET_STATUS", payload: "idle" });
-      });
+      // 不使用 requestAnimationFrame，防止发起多次请求
+      computeRealPositions();
+      dispatch({ type: "SET_STATUS", payload: "idle" });
     }
   }, [state.status, computeRealPositions]);
 
@@ -133,19 +131,27 @@ export function useWaterFallLayout<T>(
 
 export function useInfiniteScroll(
   loadingRef: React.RefObject<HTMLDivElement>,
-  onReachBottom: (() => void) | undefined,
+  isLoading: boolean,
   isFinish: boolean,
+  onReachBottom: (() => void) | undefined,
 ) {
   useEffect(() => {
-    const loadingObserver = new IntersectionObserver(
+    if (isFinish || isLoading) {
+      return;
+    }
+    let loadingObserver: IntersectionObserver | null = null;
+
+    loadingObserver = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && !isFinish) {
+        // 获取最后一个元素 因为可能观察多次
+        const entry = entries[entries.length - 1];
+        if (entry?.isIntersecting && !isFinish && !isLoading) {
+          console.log("onReachBottom");
           onReachBottom?.();
         }
       },
       {
         root: null,
-        rootMargin: "100px",
         threshold: 0,
       },
     );
@@ -155,7 +161,10 @@ export function useInfiniteScroll(
     }
 
     return () => {
-      loadingObserver.disconnect();
+      if (loadingObserver) {
+        loadingObserver.disconnect();
+        loadingObserver = null;
+      }
     };
-  }, [isFinish, onReachBottom]);
+  }, [loadingRef, isFinish, isLoading, onReachBottom]);
 }

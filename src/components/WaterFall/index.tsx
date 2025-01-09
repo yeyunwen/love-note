@@ -10,6 +10,7 @@ orbit.register();
 const defaultProps = {
   column: 2,
   gap: 10,
+  isLoading: false,
   isFinish: false,
   needLoading: true,
 } as const;
@@ -45,7 +46,7 @@ const LoadingIndicator = memo<{ isFinish: boolean }>(({ isFinish }) => (
 ));
 
 const WaterFall = <T,>(props: WaterFallProps<T>): React.ReactElement => {
-  const { column, gap, data, isFinish, needLoading, children, onReachBottom } = {
+  const { column, gap, data, isFinish, isLoading, needLoading, children, onReachBottom } = {
     ...defaultProps,
     ...props,
   };
@@ -62,7 +63,7 @@ const WaterFall = <T,>(props: WaterFallProps<T>): React.ReactElement => {
     gap,
   );
 
-  useInfiniteScroll(loadingRef, onReachBottom, isFinish ?? false);
+  useInfiniteScroll(loadingRef, isLoading, isFinish, onReachBottom);
 
   return (
     <WaterFallErrorBoundary>

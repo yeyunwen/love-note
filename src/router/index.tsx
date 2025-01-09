@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouteObject, useLocation, matchPath } from "react-router-dom";
 import { DefaultLayout } from "../layout";
 import Index from "@/pages/index/index";
+// import IndexOld from "@/pages/index/index.old";
 import Login from "@/pages/login";
 import Detail from "@/pages/detail";
 import New from "@/pages/new";
@@ -42,6 +43,7 @@ const routes: CustomRouteObject[] = [
         path: "/",
         element: (
           <KeepAlive name="IndexPage" cacheKey="IndexPage">
+            {/* <IndexOld /> */}
             <Index />
           </KeepAlive>
         ), // 使用包装后的组件

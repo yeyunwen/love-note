@@ -42,6 +42,7 @@ export interface WaterFallProps<T> {
   column?: number;
   gap?: number;
   data: WaterFallData<T>[];
+  isLoading?: boolean;
   isFinish?: boolean;
   needLoading?: boolean;
   children?: (data: { sourceData: T; imgHeight: number }) => React.ReactNode;

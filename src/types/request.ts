@@ -5,5 +5,10 @@ export interface PaginationQueryDto {
 
 export interface PaginationResponseDto<T> {
   items: T[];
-  total: number;
+  meta: {
+    limit: number;
+    page: number;
+    total: number;
+    totalPages: number;
+  };
 }

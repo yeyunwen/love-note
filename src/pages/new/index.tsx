@@ -1,6 +1,8 @@
+import React, { useRef, useState } from "react";
+import { useSprings, animated } from "@react-spring/web";
+import { useDrag } from "@use-gesture/react";
 import SvgIcon from "@/components/SvgIcon";
 import style from "./index.module.scss";
-import { useRef, useState } from "react";
 import { uploadImgsApi, type UploadImgsRes, createNoteApi } from "@/api/new";
 import { useNavigate } from "react-router-dom";
 import Toast from "@/components/Toast";
@@ -18,9 +20,39 @@ const New = () => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const navigate = useNavigate();
 
+  const [springs, api] = useSprings(imgs.length, () => ({
+    scale: 1,
+    zIndex: 0,
+    immediate: false,
+  }));
+
+  const bind = useDrag(({ args: [originalIndex], active, movement: [x] }) => {
+    const currentPosition = originalIndex + Math.round(x / 82);
+    const targetIndex = Math.max(0, Math.min(currentPosition, imgs.length - 1));
+
+    api.start((index) => ({
+      scale: active && index === originalIndex ? 1.1 : 1,
+      zIndex: active && index === originalIndex ? 1 : 0,
+      immediate: active,
+    }));
+
+    if (!active) {
+      const newImgs = [...imgs];
+      const [movedItem] = newImgs.splice(originalIndex, 1);
+      newImgs.splice(targetIndex, 0, movedItem);
+      setImgs(newImgs);
+
+      console.log(
+        "New image order:",
+        newImgs.map((img) => img.id),
+      );
+    }
+  });
+
   const clickAddImg = () => {
     addImgRef.current?.click();
   };
+
   const handleChangeImg = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (imgs.length >= imgLimit) {
       Toast.show({ message: `最多只能添加${imgLimit}张图片` });
@@ -94,10 +126,21 @@ const New = () => {
   return (
     <div className={style.newContainer}>
       <div className={style.imgContainer}>
-        {imgs.map((img, index) => (
-          <div key={img.id} className={style.imgItem} onClick={() => handlePreview(index)}>
-            <img src={img.url} alt={img.originalname} />
-          </div>
+        {springs.map(({ scale, zIndex }, i) => (
+          <animated.div
+            key={imgs[i].id}
+            className={style.imgItem}
+            style={{
+              scale,
+              zIndex,
+              touchAction: "none",
+              cursor: "grab",
+            }}
+            {...bind(i)}
+            onClick={() => handlePreview(i)}
+          >
+            <img src={imgs[i].url} alt={imgs[i].originalname} draggable={false} />
+          </animated.div>
         ))}
         <div className={style.addImg} onClick={clickAddImg}>
           <SvgIcon name="addImg" />
@@ -150,13 +193,11 @@ const New = () => {
         onChange={handleChangePreview}
       >
         <div className={style.operateContainer}>
-          (
           {currentIndex !== 0 && (
             <div className={style.operateItem} onClick={handleSetCover}>
               设置为封面
             </div>
           )}
-          )
           <div className={style.operateItem} onClick={handleDeleteImg}>
             删除
           </div>

@@ -2,38 +2,38 @@ import { NavLink } from "react-router-dom";
 import style from "./index.module.scss";
 
 type NoteCardProps = {
-  detail: {
-    title?: string;
-    author: string;
-    avatar: string;
-    imgHeight: number;
-    url: string;
-    id: number;
-  };
+  title?: string;
+  author: string;
+  avatar: string;
+  imgHeight: number;
+  url: string;
+  id: number;
 };
 
 const getImgHeight = (height: number) => {
-  const minHeight = 150;
-  return height > minHeight ? height : minHeight;
+  const MIN_HEIGHT = 150;
+  const MAX_HEIGHT = 300;
+
+  return Math.min(Math.max(height, MIN_HEIGHT), MAX_HEIGHT);
 };
 
 const NoteCard = (props: NoteCardProps) => {
   return (
-    <NavLink className={style.noteCardContainer} to={`/note/${props.detail.id}`}>
+    <NavLink className={style.noteCardContainer} to={`/note/${props.id}`}>
       <div
         className={style.imgWrapper}
         style={{
-          height: `${getImgHeight(props.detail.imgHeight)}px`,
+          height: `${getImgHeight(props.imgHeight)}px`,
         }}
       >
-        <img className={style.noteCardImg} src={props.detail.url} />
+        <img className={style.noteCardImg} src={props.url} />
       </div>
       <div className={style.footer}>
-        <div className={style.title}>{props.detail.title}</div>
+        <div className={style.title}>{props.title}</div>
         <div className={style.authorWrapper}>
           <div className={style.author}>
-            <img className={style.avatar} src={props.detail.avatar} />
-            <span className={style.name}>{props.detail.author}</span>
+            <img className={style.avatar} src={props.avatar} />
+            <span className={style.name}>{props.author}</span>
           </div>
         </div>
       </div>

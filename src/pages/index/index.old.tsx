@@ -1,6 +1,6 @@
-import WaterFall, { type CardItem } from "@/components/WaterFall/index.new";
+import WaterFall, { type CardItem } from "@/components/WaterFall/index.oldNew";
 import style from "./index.module.scss";
-import NoteCard from "./components/NoteCard";
+import NoteCard from "./components/NoteCard/index.old";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { getNotesApi } from "@/api/note";
 
@@ -9,9 +9,6 @@ const Index = () => {
   const observerRef = useRef<ResizeObserver | null>(null);
   const lastWidth = useRef(0);
   const [column, setColumn] = useState(0);
-  const [data, setData] = useState<CardItem[]>([]);
-  const pageRef = useRef(0);
-  const [isFinish, setIsFinish] = useState(false);
 
   // 使用 useCallback 缓存 getData 函数
   const getData = useCallback(async (page: number, limit: number): Promise<CardItem[]> => {
@@ -40,21 +37,6 @@ const Index = () => {
     }
 
     setColumn(column);
-  };
-
-  const handleReachBottom = () => {
-    console.log("handleReachBottom", isFinish);
-    if (isFinish) {
-      return;
-    }
-    const newPage = pageRef.current + 1;
-    pageRef.current = newPage;
-    getData(newPage, 10).then((res) => {
-      setData((prev) => [...prev, ...res]);
-      if (res.length === 0) {
-        setIsFinish(true);
-      }
-    });
   };
 
   // 初始化 observer
@@ -87,12 +69,7 @@ const Index = () => {
         {/* 如果默认值是2，可实际计算是3，waterfall会出现问题
         核心原因还是需要计算图片高度渲染好之后，才能计算卡片高度，一共2次渲染 */}
         {column > 0 && (
-          <WaterFall
-            data={data}
-            column={column}
-            onReachBottom={handleReachBottom}
-            isFinish={isFinish}
-          >
+          <WaterFall request={getData} column={column}>
             {({ item, imgHeight }) => {
               return NoteCard({
                 detail: {

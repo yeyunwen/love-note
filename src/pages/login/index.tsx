@@ -41,7 +41,7 @@ const Login: React.FC = () => {
             type="text"
             placeholder="邮箱"
             className={styles.input}
-            defaultValue="1571374338@qq.com"
+            defaultValue="test1@example.com"
             {...register("email", { required: true })}
           />
           {errors.email && <ErrorMessage message="邮箱是必填项" />}

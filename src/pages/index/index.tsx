@@ -1,86 +1,95 @@
-import WaterFall, { type CardItem } from "@/components/WaterFall";
+import { useCallback, useEffect, useState, useRef } from "react";
+import WaterFall from "@/components/WaterFall/index";
+import { type WaterFallData } from "@/components/WaterFall/types";
+import { Note, getNotesApi } from "@/api/note";
+import NoteCard from "./components/NoteCard/index";
 import style from "./index.module.scss";
-import NoteCard from "./components/NoteCard";
-import { useEffect, useRef, useState, useCallback } from "react";
-import { getNotesApi } from "@/api/note";
 
-const Index = () => {
-  const fContainerRef = useRef<HTMLDivElement>(null);
-  const observerRef = useRef<ResizeObserver | null>(null);
-  const lastWidth = useRef(0);
-  const [column, setColumn] = useState(0);
+// 转换 API 数据为 WaterFallData 格式
+const transformNoteToWaterFallData = (note: Note): WaterFallData<Note> => ({
+  dimensions: {
+    width: note.images[0].width,
+    height: note.images[0].height,
+  },
+  sourceData: note,
+});
 
-  // 使用 useCallback 缓存 getData 函数
-  const getData = useCallback(async (page: number, limit: number): Promise<CardItem[]> => {
-    const { items: notes } = await getNotesApi({ page, limit });
-    return notes.map((i) => ({
-      id: i.id,
-      url: i.images[0].url,
-      width: i.images[0].width,
-      height: i.images[0].height,
-      author: i.user.username,
-      title: i.title ?? "",
-      avatar: i.user.avatar,
-    }));
-  }, []);
+const Index: React.FC = () => {
+  const [data, setData] = useState<WaterFallData<Note>[]>([]);
+  const [isFinish, setIsFinish] = useState(false);
+  const [column, setColumn] = useState(2);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const pageRef = useRef(1);
 
-  const changeColumn = (width: number) => {
-    let column = 2;
-    if (width > 960) {
-      column = 5;
-    } else if (width >= 690 && width < 960) {
-      column = 4;
-    } else if (width >= 500 && width < 690) {
-      column = 3;
-    } else {
-      column = 2;
-    }
-
-    setColumn(column);
-  };
-
-  // 初始化 observer
-  useEffect(() => {
-    if (fContainerRef.current) {
-      observerRef.current = new ResizeObserver((entries) => {
-        const currentWidth = entries[0].target.clientWidth;
-        // 防止KeepAlive 失活时，不必要的计算
-        if (currentWidth > 0) {
-          if (lastWidth.current !== currentWidth) {
-            changeColumn(currentWidth);
-            lastWidth.current = currentWidth;
-          }
-        }
+  const handleReachBottom = useCallback(async () => {
+    try {
+      const { items: notes, meta } = await getNotesApi({
+        page: pageRef.current,
+        limit: 5,
       });
-      observerRef.current.observe(fContainerRef.current);
-    }
 
-    return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-        observerRef.current = null;
+      if (meta.page >= meta.totalPages) {
+        setIsFinish(true);
       }
-    };
+
+      pageRef.current += 1;
+
+      const newData = notes.map(transformNoteToWaterFallData);
+      setData((prev) => [...prev, ...newData]);
+    } catch (error) {
+      console.error("Failed to fetch notes:", error);
+    }
   }, []);
+
+  // 监听容器宽度变化
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const observer = new ResizeObserver((entries) => {
+      const width = entries[0].contentRect.width;
+      let newColumn = 2;
+
+      if (width > 960) {
+        newColumn = 5;
+      } else if (width >= 690) {
+        newColumn = 4;
+      } else if (width >= 500) {
+        newColumn = 3;
+      }
+
+      setColumn(newColumn);
+    });
+
+    observer.observe(containerRef.current);
+
+    return () => observer.disconnect();
+  }, []);
+
+  // // 初始加载
+  // useEffect(() => {
+  //   handleReachBottom();
+  // }, []);
 
   return (
-    <div className={style.indexContainer} ref={fContainerRef}>
-      <main>
-        {/* 如果默认值是2，可实际计算是3，waterfall会出现问题
-        核心原因还是需要计算图片高度渲染好之后，才能计算卡片高度，一共2次渲染 */}
-        {column > 0 && (
-          <WaterFall request={getData} column={column}>
-            {({ item, imgHeight }) => {
-              return NoteCard({
-                detail: {
-                  imgHeight,
-                  ...item,
-                },
-              });
-            }}
-          </WaterFall>
+    <div className={style.indexContainer} ref={containerRef}>
+      <WaterFall<Note>
+        data={data}
+        column={column}
+        gap={10}
+        isFinish={isFinish}
+        onReachBottom={handleReachBottom}
+      >
+        {({ sourceData, imgHeight }) => (
+          <NoteCard
+            id={sourceData.id}
+            imgHeight={imgHeight}
+            url={sourceData.images[0].url}
+            title={sourceData.title ?? ""}
+            author={sourceData.user.username}
+            avatar={sourceData.user.avatar}
+          />
         )}
-      </main>
+      </WaterFall>
     </div>
   );
 };

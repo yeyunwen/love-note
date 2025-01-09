@@ -9,10 +9,10 @@ export interface CardItem {
   id: number;
   url: string;
   height: number;
-  width: number;
   title?: string;
   author: string;
   avatar: string;
+  [key: string]: any;
 }
 
 export interface CardPos {
@@ -31,42 +31,64 @@ export type WaterFallChildren = (data: {
 type WaterFallProps = {
   column?: number;
   gap?: number;
-  data: CardItem[];
-  isFinish?: boolean;
-  needLoading?: boolean;
+  pageSize?: number;
+  /** 底部距离触发刷新 */
+  bottomGapToFetch?: number;
+  request: (page: number, pageSize: number) => Promise<CardItem[]>;
   children?: WaterFallChildren;
-  onReachBottom?: () => void;
 };
 
-const defaultProps: WaterFallProps = {
+const defaultProps = {
   column: 2,
   gap: 10,
-  isFinish: false,
-  needLoading: true,
-  data: [],
+  pageSize: 5,
+  bottomGapToFetch: 20,
 };
 
-const WaterFall: React.FC<WaterFallProps> = (p) => {
-  const props = { ...defaultProps, ...p };
+const WaterFall = (props: WaterFallProps) => {
+  props = { ...defaultProps, ...props };
 
   const waterFallRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const containerObserverRef = useRef<ResizeObserver | null>(null);
   const loadingRef = useRef<HTMLDivElement>(null);
   const lastWidth = useRef(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isFinish, setIsFinish] = useState(false);
+  const [, setCurPage] = useState(0);
   const [cardWidth, setCardWidth] = useState(0);
+  const [fetchList, setFetchList] = useState<CardItem[]>([]); // 增量获取的数据
+  const [allFetchList, setAllFetchList] = useState<CardItem[]>([]); // 全量获取的数据
   const [allPosList, setAllPosList] = useState<CardPos[]>([]); // 全量获取的数据的位置
   const [columnHeightList, setColumnHeightList] = useState<number[]>( // 每列的当前的高度
     new Array(props.column).fill(0),
   );
   const [needInitColumn, setNeedInitColumn] = useState(false);
-  const [needComputeRealPos, setNeedComputeRealPos] = useState(false);
   const computedCardWidth = () => {
     if (waterFallRef && waterFallRef.current) {
       const width = waterFallRef.current.clientWidth - (props.column! - 1) * props.gap!;
       return width / props.column!;
     }
     return 0;
+  };
+
+  const fetchData = async (page: number, pageSize: number) => {
+    if (isLoading || isFinish) {
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const data = await props.request(page, pageSize);
+      if (data.length < pageSize) {
+        setIsFinish(true);
+      }
+      setFetchList(data);
+      setAllFetchList((prev) => [...prev, ...data]);
+      const imgPos = computedImgHeight(data);
+      setAllPosList((prev) => [...prev, ...imgPos]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const computedImgHeight = (list: CardItem[]): CardPos[] => {
@@ -115,10 +137,9 @@ const WaterFall: React.FC<WaterFallProps> = (p) => {
     return result;
   };
 
-  // 挂载初始化 注册监听事件
+  // 挂载初始化
   useEffect(() => {
     if (waterFallRef.current && !containerObserverRef.current) {
-      // 监听容器宽度变化
       containerObserverRef.current = new ResizeObserver(
         throttle((entries) => {
           const observerWidth = entries[0].target.clientWidth;
@@ -132,12 +153,14 @@ const WaterFall: React.FC<WaterFallProps> = (p) => {
       containerObserverRef.current.observe(waterFallRef.current);
     }
 
-    // 监听loading组件是否进入可视区域
     const loadingObserver = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
-          console.log("loading组件进入可视区域");
-          props.onReachBottom?.();
+        if (entries[0].isIntersecting && !isLoading && !isFinish) {
+          setCurPage((prev) => {
+            const nextPage = prev + 1;
+            fetchData(nextPage, props.pageSize!);
+            return nextPage;
+          });
         }
       },
       {
@@ -160,30 +183,30 @@ const WaterFall: React.FC<WaterFallProps> = (p) => {
   }, []);
 
   /**
-   * 全量计算 realPos
+   * 滚动、fetch数据更新
+   * 增量计算 pos
    */
   useEffect(() => {
-    if (needComputeRealPos) {
-      const realPos = computedRealPos(props.data);
-      setAllPosList(realPos);
-      setNeedComputeRealPos(false);
+    if (fetchList.length) {
+      console.log("update fetch", fetchList);
+
+      const realPos = computedRealPos(fetchList);
+      setAllPosList(allPosList.slice(0, allPosList.length - fetchList.length).concat(realPos));
     }
-  }, [needComputeRealPos]);
+  }, [fetchList]);
 
   /**
    * 父组件宽度改变 column
    * 组件自身宽度改变 cardWidth
-   * 数据改变 data
-   * 全量计算 imgPos
+   * 全量计算 pos
    */
   useEffect(() => {
     console.log("WaterFall 父组件宽度改变 column");
-    const imgPos = computedImgHeight(props.data);
+    const imgPos = computedImgHeight(allFetchList);
     setAllPosList(imgPos);
-    // setFetchList([...allFetchList]);
+    setFetchList([...allFetchList]);
     setNeedInitColumn(true);
-    setNeedComputeRealPos(true);
-  }, [props.column, cardWidth, props.data]);
+  }, [props.column, cardWidth]);
 
   return (
     <div ref={waterFallRef} className={style.waterFallContainer}>
@@ -192,22 +215,22 @@ const WaterFall: React.FC<WaterFallProps> = (p) => {
         className={style.waterFallList}
         style={{ height: `${Math.max(...columnHeightList)}px` }}
       >
-        {allPosList.map((item, index) => {
+        {allFetchList.map((item, index) => {
           return (
             <section
               className={style.waterFallItem}
-              key={props.data[index].id}
+              key={item.id}
               style={{
-                width: `${item.width}px`,
-                transform: `translate(${item.x}px,${item.y}px)`,
+                width: `${allPosList[index].width}px`,
+                transform: `translate(${allPosList[index].x}px,${allPosList[index].y}px)`,
                 // transition: "all 0.3s",
               }}
             >
               {props.children
                 ? props.children({
-                    item: props.data[index],
+                    item,
                     index,
-                    imgHeight: item.imgHeight,
+                    imgHeight: allPosList[index].imgHeight,
                   })
                 : null}
             </section>
@@ -215,14 +238,14 @@ const WaterFall: React.FC<WaterFallProps> = (p) => {
         })}
       </div>
       <div ref={loadingRef} className={style.waterFallLoading}>
-        {props.isFinish ? (
+        {isFinish ? (
           <span>没有更多数据了</span>
-        ) : props.needLoading ? (
+        ) : (
           <>
             <l-orbit size="30" speed="1.5" color="#9A9898"></l-orbit>
             <span>加载中</span>
           </>
-        ) : null}
+        )}
       </div>
     </div>
   );

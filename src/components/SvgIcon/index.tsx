@@ -6,7 +6,6 @@ type SvgIconProps = {
   height?: number;
   color?: string;
   name?: string;
-  [key: string]: any;
 };
 
 const SvgIcon = (props: SvgIconProps) => {

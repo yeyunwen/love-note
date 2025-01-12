@@ -11,6 +11,10 @@ const tabBarList = [
     name: "new",
     path: "/new",
   },
+  {
+    name: "me",
+    path: "/me",
+  },
 ];
 
 const TabBar = () => {

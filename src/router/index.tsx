@@ -6,6 +6,7 @@ import Login from "@/pages/login";
 import Detail from "@/pages/detail";
 import New from "@/pages/new";
 import { KeepAlive } from "react-activation";
+import Me from "@/pages/me";
 
 // 定义 Meta 类型
 export interface RouteMeta {
@@ -70,6 +71,14 @@ const routes: CustomRouteObject[] = [
           title: "笔记详情",
           requiresAuth: true,
           customNavBar: true,
+        },
+      },
+      {
+        path: "/me",
+        element: <Me />,
+        meta: {
+          title: "我的",
+          requiresAuth: true,
         },
       },
     ],

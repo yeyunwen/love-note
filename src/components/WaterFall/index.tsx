@@ -79,14 +79,23 @@ const WaterFall = <T,>(props: WaterFallProps<T>): React.ReactElement => {
           role="row"
           style={{ height: `${Math.max(...columnHeights)}px` }}
         >
-          {positions.map((item, index) => (
-            <WaterFallItem key={`waterfall-item-${index}`} width={item.width} x={item.x} y={item.y}>
-              {children?.({
-                sourceData: data[index].sourceData,
-                imgHeight: item.imgHeight,
-              })}
-            </WaterFallItem>
-          ))}
+          {positions.map((item, index) => {
+            // 当父组件reload刷新数据后，positions的值在 Waterfall 重新 render 的时候还是之前的长度，此时需要过滤掉多余的
+            if (index > data.length - 1) return;
+            return (
+              <WaterFallItem
+                key={`waterfall-item-${index}`}
+                width={item.width}
+                x={item.x}
+                y={item.y}
+              >
+                {children?.({
+                  sourceData: data[index].sourceData,
+                  imgHeight: item.imgHeight,
+                })}
+              </WaterFallItem>
+            );
+          })}
         </div>
         {needLoading && (
           <div ref={loadingRef}>

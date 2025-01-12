@@ -97,8 +97,12 @@ export function useWaterFallLayout<T>(
   useEffect(() => {
     if (containerRef.current && !observerRef.current) {
       observerRef.current = new ResizeObserver(
-        throttle(() => {
-          computeLayout();
+        throttle((entries) => {
+          // 防止KeepAlive 失活时，不必要的计算
+          const observerWidth = entries[0].target.clientWidth;
+          if (observerWidth > 0) {
+            computeLayout();
+          }
         }, 200),
       );
       observerRef.current.observe(containerRef.current);
@@ -131,20 +135,24 @@ export function useWaterFallLayout<T>(
 
 export function useInfiniteScroll(
   loadingRef: React.RefObject<HTMLDivElement>,
-  isLoading: boolean,
   isFinish: boolean,
-  onReachBottom: (() => void) | undefined,
+  isLoading: boolean,
+  onReachBottom?: () => void,
 ) {
-  useEffect(() => {
-    if (isFinish || isLoading) {
-      return;
-    }
-    let loadingObserver: IntersectionObserver | null = null;
+  // 使用 useRef 来存储最新的状态和回调
+  const stateRef = useRef({ isFinish, isLoading, onReachBottom });
 
-    loadingObserver = new IntersectionObserver(
+  // 更新 ref 中的值
+  useEffect(() => {
+    stateRef.current = { isFinish, isLoading, onReachBottom };
+  }, [isFinish, isLoading, onReachBottom]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
       (entries) => {
         // 获取最后一个元素 因为可能观察多次
         const entry = entries[entries.length - 1];
+        const { isFinish, isLoading, onReachBottom } = stateRef.current;
         if (entry?.isIntersecting && !isFinish && !isLoading) {
           console.log("onReachBottom");
           onReachBottom?.();
@@ -157,14 +165,11 @@ export function useInfiniteScroll(
     );
 
     if (loadingRef.current) {
-      loadingObserver.observe(loadingRef.current);
+      observer.observe(loadingRef.current);
     }
 
     return () => {
-      if (loadingObserver) {
-        loadingObserver.disconnect();
-        loadingObserver = null;
-      }
+      observer.disconnect();
     };
-  }, [loadingRef, isFinish, isLoading, onReachBottom]);
+  }, [loadingRef]); // 只依赖 loadingRef
 }

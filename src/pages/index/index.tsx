@@ -5,6 +5,9 @@ import { Note, getNotesApi } from "@/api/note";
 import NoteCard from "./components/NoteCard/index";
 import style from "./index.module.scss";
 import SvgIcon from "@/components/SvgIcon";
+import Toast from "@/components/Toast";
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // 转换 API 数据为 WaterFallData 格式
 const transformNoteToWaterFallData = (note: Note): WaterFallData<Note> => {
@@ -98,7 +101,13 @@ const Index: React.FC = () => {
   }, [state.data, state.page, state.isFinish, state.isLoading, state.isReloading]);
 
   const handleReload = useCallback(async () => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = 0;
+    }
+
     dispatch({ type: "SET_RELOADING", payload: true });
+    await sleep(3000);
+
     dispatch({ type: "SET_FINISH", payload: false });
     dispatch({ type: "SET_PAGE", payload: 1 });
 
@@ -107,6 +116,10 @@ const Index: React.FC = () => {
     dispatch({ type: "SET_DATA", payload: [...data] });
     dispatch({ type: "SET_PAGE", payload: meta.page + 1 });
     dispatch({ type: "SET_RELOADING", payload: false });
+
+    Toast.show({
+      message: "刷新成功~",
+    });
   }, []);
 
   useEffect(() => {
@@ -133,29 +146,33 @@ const Index: React.FC = () => {
   }, []);
 
   return (
-    <div className={style.indexContainer} ref={containerRef}>
-      {state.isReloading && <div className={style.reloadLoading}>加载中...</div>}
-      <WaterFall<Note>
-        data={state.data}
-        column={state.column}
-        gap={10}
-        isFinish={state.isFinish}
-        isLoading={state.isLoading}
-        onReachBottom={handleReachBottom}
-      >
-        {({ sourceData, imgHeight }) => {
-          return (
-            <NoteCard
-              id={sourceData.id}
-              imgHeight={imgHeight}
-              url={sourceData.images[0].url}
-              title={sourceData.title ?? ""}
-              author={sourceData.user.username}
-              avatar={sourceData.user.avatar}
-            />
-          );
-        }}
-      </WaterFall>
+    <div className={style.indexContainer}>
+      <div className={style.reloadContainer} style={{ height: state.isReloading ? "64px" : "0" }}>
+        <SvgIcon name="reload" className={style.reloadIcon} />
+      </div>
+      <div ref={containerRef} className={style.noteContainer}>
+        <WaterFall<Note>
+          data={state.data}
+          column={state.column}
+          gap={10}
+          isFinish={state.isFinish}
+          isLoading={state.isLoading}
+          onReachBottom={handleReachBottom}
+        >
+          {({ sourceData, imgHeight }) => {
+            return (
+              <NoteCard
+                id={sourceData.id}
+                imgHeight={imgHeight}
+                url={sourceData.images[0].url}
+                title={sourceData.title ?? ""}
+                author={sourceData.user.username}
+                avatar={sourceData.user.avatar}
+              />
+            );
+          }}
+        </WaterFall>
+      </div>
       <div className={style.floatingBtnSets}>
         <div className={style.reload} onClick={handleReload}>
           <SvgIcon name="reload" />

@@ -2,6 +2,7 @@ import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
 import store from "@/store";
 import { logout } from "@/store/authSlice";
 import RadixToast from "@/components/RadixToast";
+import router from "@/router";
 
 export interface ApiResponse<T> {
   code: number;
@@ -40,8 +41,9 @@ axiosInstance.interceptors.response.use(
     const { code, data, message } = response.data as ApiResponse<any>;
 
     if (code === ErrorCode.未登录) {
+      RadixToast.show("未登录");
       store.dispatch(logout());
-      window.location.href = "/login";
+      router.navigate("/login");
       return Promise.reject(new Error(message));
     }
 
@@ -53,12 +55,12 @@ axiosInstance.interceptors.response.use(
   },
   (error) => {
     const { response } = error;
-
     if (response) {
       switch (response.status) {
         case ErrorCode.未登录: {
+          RadixToast.show("未登录");
           store.dispatch(logout());
-          window.location.href = "/login";
+          router.navigate("/login");
           break;
         }
         case ErrorCode.请求失败: {

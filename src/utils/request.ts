@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
+import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import store from "@/store";
 import { logout } from "@/store/authSlice";
 import RadixToast from "@/components/RadixToast";
@@ -37,11 +37,11 @@ axiosInstance.interceptors.request.use((config) => {
 });
 
 axiosInstance.interceptors.response.use(
-  (response) => {
-    const { code, data, message } = response.data as ApiResponse<any>;
+  (response: AxiosResponse<ApiResponse<any>>) => {
+    const { code, data, message } = response.data;
 
     if (code === ErrorCode.未登录) {
-      RadixToast.show("未登录");
+      RadixToast.show(message || "未登录");
       store.dispatch(logout());
       router.navigate("/login");
       return Promise.reject(new Error(message));
@@ -53,22 +53,23 @@ axiosInstance.interceptors.response.use(
 
     return data;
   },
-  (error) => {
+  (error: AxiosError<ApiResponse<any>>) => {
     const { response } = error;
     if (response) {
-      switch (response.status) {
+      const { code, message } = response.data;
+      switch (code) {
         case ErrorCode.未登录: {
-          RadixToast.show("未登录");
+          RadixToast.show(message || "未登录");
           store.dispatch(logout());
           router.navigate("/login");
           break;
         }
         case ErrorCode.请求失败: {
-          RadixToast.show(response.data.message);
+          RadixToast.show(message || "请求失败");
           break;
         }
         case ErrorCode.服务器错误: {
-          RadixToast.show(response.data.message);
+          RadixToast.show(message || "服务器错误");
           break;
         }
       }

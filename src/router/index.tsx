@@ -79,6 +79,7 @@ const routes: CustomRouteObject[] = [
         meta: {
           title: "我的",
           requiresAuth: true,
+          showNavBar: false,
         },
       },
     ],

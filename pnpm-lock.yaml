@@ -7,6 +7,12 @@ settings:
 importers:
   .:
     dependencies:
+      "@nutui/icons-react":
+        specifier: ^2.0.1
+        version: 2.0.1
+      "@nutui/nutui-react":
+        specifier: ^2.7.9
+        version: 2.7.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       "@radix-ui/react-toast":
         specifier: ^1.2.4
         version: 1.2.4(@types/react-dom@18.3.0)(@types/react@18.3.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -122,6 +128,9 @@ importers:
       vite:
         specifier: ^5.4.1
         version: 5.4.8(@types/node@22.7.4)(sass@1.79.4)
+      vite-plugin-imp:
+        specifier: ^2.4.0
+        version: 2.4.0(vite@5.4.8(@types/node@22.7.4)(sass@1.79.4))
       vite-plugin-svg-icons:
         specifier: ^2.0.1
         version: 2.0.1(vite@5.4.8(@types/node@22.7.4)(sass@1.79.4))
@@ -624,6 +633,38 @@ packages:
       }
     engines: { node: ">= 8" }
 
+  "@nutui/icons-react@1.0.5":
+    resolution:
+      {
+        integrity: sha512-0TYl3Fk+sVz95DKqn/7isYAvaK5YGnaBwMMib4rqYLoqi9GGFwgU9rp2hYXu/X5IYdWgshj0xiuGMK75/vUYbQ==,
+      }
+
+  "@nutui/icons-react@2.0.1":
+    resolution:
+      {
+        integrity: sha512-xRgfR52G18DM7/8kb6Giem12G5CxpMo563YKg0HVc27Ch/0+TbB9ODvk0KwY8Wqnn+qMEdpv9UPp1uXj+Rfibg==,
+      }
+
+  "@nutui/jdesign-icons-react-taro@1.0.6-beta.2":
+    resolution:
+      {
+        integrity: sha512-2Scz5c9o14gA7Mw5JdiEkc/KEbNlNWMcJMuqVyFVipYeeYN/118N/fvHVpocmJviN0Gc4P+u3ZB3dIQSA2j4Fw==,
+      }
+
+  "@nutui/nutui-react@2.7.9":
+    resolution:
+      {
+        integrity: sha512-gvFsS0GW19mPhQVQb8Kmox2jgvT/taA70c5p8XB8mmrhrJOIeygoaMmd1RpoXTx810CHEYeTPYd/2kRD6NBBrw==,
+      }
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+
+  "@nutui/touch-emulator@1.0.0":
+    resolution:
+      {
+        integrity: sha512-k2hvI/9LlRA7Ph1Chni27pTuvPmKPt+/I10sWWd2sWzqiCOYRerD79eIwCMRGUF/q6WVDEKVnv00t9CEUL4sPA==,
+      }
+
   "@radix-ui/primitive@1.1.1":
     resolution:
       {
@@ -826,10 +867,26 @@ packages:
       "@types/react-dom":
         optional: true
 
+  "@react-spring/animated@9.6.1":
+    resolution:
+      {
+        integrity: sha512-ls/rJBrAqiAYozjLo5EPPLLOb1LM0lNVQcXODTC1SMtS6DbuBCPaKco5svFUQFMP2dso3O+qcC4k9FsKc0KxMQ==,
+      }
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+
   "@react-spring/animated@9.7.5":
     resolution:
       {
         integrity: sha512-Tqrwz7pIlsSDITzxoLS3n/v/YCUHQdOIKtOJf4yL6kYVSDTSmVK1LI1Q3M/uu2Sx4X3pIWF3xLUhlsA6SPNTNg==,
+      }
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+
+  "@react-spring/core@9.6.1":
+    resolution:
+      {
+        integrity: sha512-3HAAinAyCPessyQNNXe5W0OHzRfa8Yo5P748paPcmMowZ/4sMfaZ2ZB6e5x5khQI8NusOHj8nquoutd6FRY5WQ==,
       }
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
@@ -842,11 +899,25 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
 
+  "@react-spring/rafz@9.6.1":
+    resolution:
+      {
+        integrity: sha512-v6qbgNRpztJFFfSE3e2W1Uz+g8KnIBs6SmzCzcVVF61GdGfGOuBrbjIcp+nUz301awVmREKi4eMQb2Ab2gGgyQ==,
+      }
+
   "@react-spring/rafz@9.7.5":
     resolution:
       {
         integrity: sha512-5ZenDQMC48wjUzPAm1EtwQ5Ot3bLIAwwqP2w2owG5KoNdNHpEJV263nGhCeKKmuA3vG2zLLOdu3or6kuDjA6Aw==,
       }
+
+  "@react-spring/shared@9.6.1":
+    resolution:
+      {
+        integrity: sha512-PBFBXabxFEuF8enNLkVqMC9h5uLRBo6GQhRMQT/nRTnemVENimgRd+0ZT4yFnAQ0AxWNiJfX3qux+bW2LbG6Bw==,
+      }
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
 
   "@react-spring/shared@9.7.5":
     resolution:
@@ -856,11 +927,26 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
 
+  "@react-spring/types@9.6.1":
+    resolution:
+      {
+        integrity: sha512-POu8Mk0hIU3lRXB3bGIGe4VHIwwDsQyoD1F394OK7STTiX9w4dG3cTLljjYswkQN+hDSHRrj4O36kuVa7KPU8Q==,
+      }
+
   "@react-spring/types@9.7.5":
     resolution:
       {
         integrity: sha512-HVj7LrZ4ReHWBimBvu2SKND3cDVUPWKLqRTmWe/fNY6o1owGOX0cAHbdPDTMelgBlVbrTKrre6lFkhqGZErK/g==,
       }
+
+  "@react-spring/web@9.6.1":
+    resolution:
+      {
+        integrity: sha512-X2zR6q2Z+FjsWfGAmAXlQaoUHbPmfuCaXpuM6TcwXPpLE1ZD4A1eys/wpXboFQmDkjnrlTmKvpVna1MjWpZ5Hw==,
+      }
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
 
   "@react-spring/web@9.7.5":
     resolution:
@@ -1323,11 +1409,25 @@ packages:
       }
     engines: { node: ^18.18.0 || ^20.9.0 || >=21.1.0 }
 
+  "@use-gesture/core@10.2.20":
+    resolution:
+      {
+        integrity: sha512-4lFhHc8so4yIHkBEs641DnEsBxPyhJ5GEjB4PURFDH4p/FcZriH6w99knZgI63zN/MBFfylMyb8+PDuj6RIXKQ==,
+      }
+
   "@use-gesture/core@10.3.1":
     resolution:
       {
         integrity: sha512-WcINiDt8WjqBdUXye25anHiNxPc0VOrlT8F6LLkU6cycrOGUDyY/yyFmsg3k8i5OLvv25llc0QC45GhR/C8llw==,
       }
+
+  "@use-gesture/react@10.2.20":
+    resolution:
+      {
+        integrity: sha512-KnJq9ZSqprWA6uNhWTUHZqTCh+rfa0j8ehTzqeBhktUPrmTj7yVOBvEQ/vSFU/7d72cGgWSsJ0f5T6GQCHXnvg==,
+      }
+    peerDependencies:
+      react: ">= 16.8.0"
 
   "@use-gesture/react@10.3.1":
     resolution:
@@ -1485,6 +1585,12 @@ packages:
         integrity: sha512-Q+JC7Whu8HhmTdBph/Tq59IoRtoy6KAm5zzPv00WdujX82lbAL8K7WVjne7vdCsAmbF4AYaDOPyO3k0kl8qIrw==,
       }
     engines: { node: ">=0.10.0" }
+
+  async-validator@4.2.5:
+    resolution:
+      {
+        integrity: sha512-7HhHjtERjqlNbZtqNqy2rckN/SpOOlmDliet+lP7k+eKZEjPk3DgyeU9lIXLdeLz0uBbbVp+9Qdow9wJWgwwfg==,
+      }
 
   asynckit@0.4.0:
     resolution:
@@ -1653,6 +1759,12 @@ packages:
         integrity: sha512-qOhPa/Fj7s6TY8H8esGu5QNpMMQxz79h+urzrNYN6mn+9BnxlDGf5QZ+XeCDsxSjPqsSR56XOZOJmpeurnLMeg==,
       }
     engines: { node: ">=0.10.0" }
+
+  classnames@2.5.1:
+    resolution:
+      {
+        integrity: sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==,
+      }
 
   cli-cursor@5.0.0:
     resolution:
@@ -1950,6 +2062,12 @@ packages:
         integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==,
       }
     engines: { node: ">=0.4.0" }
+
+  dom-helpers@5.2.1:
+    resolution:
+      {
+        integrity: sha512-nRCa7CK3VTrM2NmGkIy4cbK7IZlgBE/PYMn55rrXefr5xXDP0LdtfPnblFDoVdcAfslJ7or6iqAUnx0CCGIWQA==,
+      }
 
   dom-serializer@0.2.2:
     resolution:
@@ -3138,6 +3256,19 @@ packages:
         integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==,
       }
 
+  lodash.isequal@4.5.0:
+    resolution:
+      {
+        integrity: sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==,
+      }
+    deprecated: This package is deprecated. Use require('node:util').isDeepStrictEqual instead.
+
+  lodash.kebabcase@4.1.1:
+    resolution:
+      {
+        integrity: sha512-N8XRTIMMqqDgSy4VLKPnJ/+hpGZN+PHQiJnSenYqPaVV/NCqEogTnAdZLQiGKhxX+JCs8waWq2t1XHWKOmlY8g==,
+      }
+
   lodash.merge@4.6.2:
     resolution:
       {
@@ -3432,6 +3563,12 @@ packages:
       }
     engines: { node: ">=10" }
 
+  param-case@3.0.4:
+    resolution:
+      {
+        integrity: sha512-RXlj7zCYokReqWpOPH9oYivUzLYZ5vAPIfEmCTNViosC78F8F0H9y7T7gG2M39ymgutxF5gcFEsyZQSph9Bp3A==,
+      }
+
   parent-module@1.0.1:
     resolution:
       {
@@ -3445,6 +3582,12 @@ packages:
         integrity: sha512-ayCKvm/phCGxOkYRSCM82iDwct8/EonSEgCSxWxD7ve6jHggsFl4fZVQBPRNgQoKiuV/odhFrGzQXZwbifC8Rg==,
       }
     engines: { node: ">=8" }
+
+  pascal-case@3.1.2:
+    resolution:
+      {
+        integrity: sha512-uWlGT3YSnK9x3BQJaOdcZwrnV6hPpd8jFH1/ucpiLRPh/2zCVJKS19E4GvYHvaCcACn3foXZ0cLB9Wrx1KGe5g==,
+      }
 
   pascalcase@0.1.1:
     resolution:
@@ -3710,6 +3853,15 @@ packages:
     engines: { node: ">=14.0.0" }
     peerDependencies:
       react: ">=16.8"
+
+  react-transition-group@4.4.5:
+    resolution:
+      {
+        integrity: sha512-pZcd1MCJoiKiBR2NRxeCRg13uCXbydPnmB4EOeRrY7480qNWO8IIgQG6zlDkm6uRMsURXPuKq0GWtiM59a5Q6g==,
+      }
+    peerDependencies:
+      react: ">=16.6.0"
+      react-dom: ">=16.6.0"
 
   react@18.3.1:
     resolution:
@@ -4393,6 +4545,14 @@ packages:
       }
     engines: { node: ">= 0.8" }
 
+  vite-plugin-imp@2.4.0:
+    resolution:
+      {
+        integrity: sha512-L/6/nvOw+MyNh4UxAlCZHsmKd5MitmHamqqAWB15sbUgVIEz/OQ8jpKr6kkQU0eA/AIe8fkCVbQBlP81ajrqWg==,
+      }
+    peerDependencies:
+      vite: ">= 2.0.0-beta.5"
+
   vite-plugin-svg-icons@2.0.1:
     resolution:
       {
@@ -4780,6 +4940,31 @@ snapshots:
       "@nodelib/fs.scandir": 2.1.5
       fastq: 1.17.1
 
+  "@nutui/icons-react@1.0.5": {}
+
+  "@nutui/icons-react@2.0.1": {}
+
+  "@nutui/jdesign-icons-react-taro@1.0.6-beta.2": {}
+
+  "@nutui/nutui-react@2.7.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)":
+    dependencies:
+      "@babel/runtime": 7.26.0
+      "@nutui/icons-react": 1.0.5
+      "@nutui/jdesign-icons-react-taro": 1.0.6-beta.2
+      "@nutui/touch-emulator": 1.0.0
+      "@react-spring/web": 9.6.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      "@use-gesture/react": 10.2.20(react@18.3.1)
+      async-validator: 4.2.5
+      classnames: 2.5.1
+      lodash.isequal: 4.5.0
+      lodash.kebabcase: 4.1.1
+      react: 18.3.1
+      react-transition-group: 4.4.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+    transitivePeerDependencies:
+      - react-dom
+
+  "@nutui/touch-emulator@1.0.0": {}
+
   "@radix-ui/primitive@1.1.1": {}
 
   "@radix-ui/react-collection@1.1.1(@types/react-dom@18.3.0)(@types/react@18.3.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)":
@@ -4910,10 +5095,24 @@ snapshots:
       "@types/react": 18.3.10
       "@types/react-dom": 18.3.0
 
+  "@react-spring/animated@9.6.1(react@18.3.1)":
+    dependencies:
+      "@react-spring/shared": 9.6.1(react@18.3.1)
+      "@react-spring/types": 9.6.1
+      react: 18.3.1
+
   "@react-spring/animated@9.7.5(react@18.3.1)":
     dependencies:
       "@react-spring/shared": 9.7.5(react@18.3.1)
       "@react-spring/types": 9.7.5
+      react: 18.3.1
+
+  "@react-spring/core@9.6.1(react@18.3.1)":
+    dependencies:
+      "@react-spring/animated": 9.6.1(react@18.3.1)
+      "@react-spring/rafz": 9.6.1
+      "@react-spring/shared": 9.6.1(react@18.3.1)
+      "@react-spring/types": 9.6.1
       react: 18.3.1
 
   "@react-spring/core@9.7.5(react@18.3.1)":
@@ -4923,7 +5122,15 @@ snapshots:
       "@react-spring/types": 9.7.5
       react: 18.3.1
 
+  "@react-spring/rafz@9.6.1": {}
+
   "@react-spring/rafz@9.7.5": {}
+
+  "@react-spring/shared@9.6.1(react@18.3.1)":
+    dependencies:
+      "@react-spring/rafz": 9.6.1
+      "@react-spring/types": 9.6.1
+      react: 18.3.1
 
   "@react-spring/shared@9.7.5(react@18.3.1)":
     dependencies:
@@ -4931,7 +5138,18 @@ snapshots:
       "@react-spring/types": 9.7.5
       react: 18.3.1
 
+  "@react-spring/types@9.6.1": {}
+
   "@react-spring/types@9.7.5": {}
+
+  "@react-spring/web@9.6.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)":
+    dependencies:
+      "@react-spring/animated": 9.6.1(react@18.3.1)
+      "@react-spring/core": 9.6.1(react@18.3.1)
+      "@react-spring/shared": 9.6.1(react@18.3.1)
+      "@react-spring/types": 9.6.1
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
 
   "@react-spring/web@9.7.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)":
     dependencies:
@@ -5219,7 +5437,14 @@ snapshots:
       "@typescript-eslint/types": 8.7.0
       eslint-visitor-keys: 3.4.3
 
+  "@use-gesture/core@10.2.20": {}
+
   "@use-gesture/core@10.3.1": {}
+
+  "@use-gesture/react@10.2.20(react@18.3.1)":
+    dependencies:
+      "@use-gesture/core": 10.2.20
+      react: 18.3.1
 
   "@use-gesture/react@10.3.1(react@18.3.1)":
     dependencies:
@@ -5308,6 +5533,8 @@ snapshots:
       is-shared-array-buffer: 1.0.3
 
   assign-symbols@1.0.0: {}
+
+  async-validator@4.2.5: {}
 
   asynckit@0.4.0: {}
 
@@ -5435,6 +5662,8 @@ snapshots:
       define-property: 0.2.5
       isobject: 3.0.1
       static-extend: 0.1.2
+
+  classnames@2.5.1: {}
 
   cli-cursor@5.0.0:
     dependencies:
@@ -5594,6 +5823,11 @@ snapshots:
       isobject: 3.0.1
 
   delayed-stream@1.0.0: {}
+
+  dom-helpers@5.2.1:
+    dependencies:
+      "@babel/runtime": 7.26.0
+      csstype: 3.1.3
 
   dom-serializer@0.2.2:
     dependencies:
@@ -6330,6 +6564,10 @@ snapshots:
 
   lodash-es@4.17.21: {}
 
+  lodash.isequal@4.5.0: {}
+
+  lodash.kebabcase@4.1.1: {}
+
   lodash.merge@4.6.2: {}
 
   log-update@6.1.0:
@@ -6511,6 +6749,11 @@ snapshots:
     dependencies:
       p-limit: 3.1.0
 
+  param-case@3.0.4:
+    dependencies:
+      dot-case: 3.0.4
+      tslib: 2.7.0
+
   parent-module@1.0.1:
     dependencies:
       callsites: 3.1.0
@@ -6521,6 +6764,11 @@ snapshots:
       error-ex: 1.3.2
       json-parse-even-better-errors: 2.3.1
       lines-and-columns: 1.2.4
+
+  pascal-case@3.1.2:
+    dependencies:
+      no-case: 3.0.4
+      tslib: 2.7.0
 
   pascalcase@0.1.1: {}
 
@@ -6659,6 +6907,15 @@ snapshots:
     dependencies:
       "@remix-run/router": 1.19.2
       react: 18.3.1
+
+  react-transition-group@4.4.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      "@babel/runtime": 7.26.0
+      dom-helpers: 5.2.1
+      loose-envify: 1.4.0
+      prop-types: 15.8.1
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
 
   react@18.3.1:
     dependencies:
@@ -7112,6 +7369,19 @@ snapshots:
   util-deprecate@1.0.2: {}
 
   vary@1.1.2: {}
+
+  vite-plugin-imp@2.4.0(vite@5.4.8(@types/node@22.7.4)(sass@1.79.4)):
+    dependencies:
+      "@babel/core": 7.25.2
+      "@babel/generator": 7.25.6
+      "@babel/parser": 7.25.6
+      "@babel/traverse": 7.25.6
+      chalk: 4.1.2
+      param-case: 3.0.4
+      pascal-case: 3.1.2
+      vite: 5.4.8(@types/node@22.7.4)(sass@1.79.4)
+    transitivePeerDependencies:
+      - supports-color
 
   vite-plugin-svg-icons@2.0.1(vite@5.4.8(@types/node@22.7.4)(sass@1.79.4)):
     dependencies:

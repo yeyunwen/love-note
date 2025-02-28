@@ -24,6 +24,8 @@
     ]
   },
   "dependencies": {
+    "@nutui/icons-react": "^2.0.1",
+    "@nutui/nutui-react": "^2.7.9",
     "@radix-ui/react-toast": "^1.2.4",
     "@react-spring/web": "^9.7.5",
     "@reduxjs/toolkit": "^2.5.0",
@@ -64,6 +66,7 @@
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.1",
+    "vite-plugin-imp": "^2.4.0",
     "vite-plugin-svg-icons": "^2.0.1",
     "vite-plugin-svgr": "^4.2.0"
   }

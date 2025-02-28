@@ -2,6 +2,7 @@ import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } f
 import store from "@/store";
 import { logout } from "@/store/authSlice";
 import RadixToast from "@/components/RadixToast";
+import { Toast } from "@nutui/nutui-react";
 import router from "@/router";
 
 export interface ApiResponse<T> {
@@ -59,17 +60,17 @@ axiosInstance.interceptors.response.use(
       const { code, message } = response.data;
       switch (code) {
         case ErrorCode.未登录: {
-          RadixToast.show(message || "未登录");
+          Toast.show(message || "未登录");
           store.dispatch(logout());
           router.navigate("/login");
           break;
         }
         case ErrorCode.请求失败: {
-          RadixToast.show(message || "请求失败");
+          Toast.show(message || "请求失败");
           break;
         }
         case ErrorCode.服务器错误: {
-          RadixToast.show(message || "服务器错误");
+          Toast.show(message || "服务器错误");
           break;
         }
       }

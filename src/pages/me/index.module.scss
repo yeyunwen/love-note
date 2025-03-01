@@ -316,3 +316,23 @@
   display: flex;
   align-items: center;
 }
+
+.unbindButton {
+  margin-top: 16px;
+  padding: 8px 16px;
+  border: 1px solid #ff4d4f;
+  border-radius: 4px;
+  background: transparent;
+  color: #ff4d4f;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+
+  &:hover {
+    background: #fff1f0;
+  }
+
+  &:active {
+    background: #ffccc7;
+  }
+}

@@ -5,6 +5,7 @@ import {
   bindLoverApi,
   rejectLoverRequestApi,
   acceptLoverRequestApi,
+  unbindLoverApi,
   UserGender,
   type UserInfo,
   LoverRequestStatus,
@@ -80,6 +81,21 @@ const Me: React.FC = () => {
         dispatch(logout());
         // 跳转到登录页
         navigate("/login");
+      },
+    });
+  };
+
+  const handleUnbindLover = async () => {
+    Dialog.alert({
+      title: "提示",
+      content: "确定要解除与恋人的绑定关系吗？",
+      footerDirection: "vertical",
+      onConfirm: async () => {
+        await unbindLoverApi();
+        Toast.show({
+          content: "已解除绑定关系",
+        });
+        getUserInfo(); // 刷新用户信息
       },
     });
   };
@@ -189,6 +205,9 @@ const Me: React.FC = () => {
                 </span>
               </div>
             </div>
+            <button className={styles.unbindButton} onClick={handleUnbindLover}>
+              解除绑定
+            </button>
           </div>
         </div>,
       );

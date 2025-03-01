@@ -84,3 +84,10 @@ export const acceptLoverRequestApi = (requestId: number) => {
     data: { requestId },
   });
 };
+
+export const unbindLoverApi = () => {
+  return request({
+    url: "/user/lover/unbind",
+    method: "POST",
+  });
+};

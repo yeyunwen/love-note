@@ -5,9 +5,8 @@ import Index from "@/pages/index/index";
 import Login from "@/pages/login";
 import Detail from "@/pages/detail";
 import New from "@/pages/new";
-import { KeepAlive } from "react-activation";
 import Me from "@/pages/me";
-
+import WithKeepAlive from "./WithKeepAlive";
 // 定义 Meta 类型
 export interface RouteMeta {
   title?: string;
@@ -43,10 +42,10 @@ const routes: CustomRouteObject[] = [
       {
         path: "/",
         element: (
-          <KeepAlive name="IndexPage" cacheKey="IndexPage">
+          <WithKeepAlive name="IndexPage">
             {/* <IndexOld /> */}
             <Index />
-          </KeepAlive>
+          </WithKeepAlive>
         ), // 使用包装后的组件
         meta: {
           title: "首页",
@@ -75,7 +74,11 @@ const routes: CustomRouteObject[] = [
       },
       {
         path: "/me",
-        element: <Me />,
+        element: (
+          <WithKeepAlive name="MePage">
+            <Me />
+          </WithKeepAlive>
+        ),
         meta: {
           title: "我的",
           requiresAuth: true,

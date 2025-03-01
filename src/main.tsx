@@ -10,15 +10,18 @@ import { Provider } from "react-redux";
 import { AliveScope } from "react-activation";
 import store from "@/store";
 import { RadixToastProvider } from "@/components/RadixToast";
+import { KeepAliveProvider } from "@/contexts/keepAlive";
 
 createRoot(document.getElementById("root")!).render(
   // <StrictMode>
   <Provider store={store}>
-    <AliveScope>
-      <RadixToastProvider>
-        <App />
-      </RadixToastProvider>
-    </AliveScope>
+    <KeepAliveProvider>
+      <AliveScope>
+        <RadixToastProvider>
+          <App />
+        </RadixToastProvider>
+      </AliveScope>
+    </KeepAliveProvider>
   </Provider>,
   // </StrictMode>
 );

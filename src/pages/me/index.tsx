@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import styles from "./index.module.scss";
 import {
   getUserInfoApi,
@@ -14,9 +14,13 @@ import { Setting, Power } from "@nutui/icons-react";
 import { Popup, Dialog, Input, Toast } from "@nutui/nutui-react";
 import { logout } from "@/store/authSlice";
 import { useNavigate } from "react-router-dom";
+import { KeepAliveContext } from "@/contexts/keepAlive";
+import { useAppDispatch } from "@/store/hooks";
 
 const Me: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { clearCache } = useContext(KeepAliveContext);
 
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -70,7 +74,11 @@ const Me: React.FC = () => {
       content: "确定要退出登录吗？",
       footerDirection: "vertical",
       onConfirm: () => {
-        logout();
+        // 先清除 KeepAlive 缓存
+        clearCache();
+        // 清除 Redux 状态
+        dispatch(logout());
+        // 跳转到登录页
         navigate("/login");
       },
     });
@@ -158,41 +166,47 @@ const Me: React.FC = () => {
   };
 
   const renderLoverContent = () => {
-    if (userInfo) {
-      if (userInfo.lover) {
-        return (
-          <div className={styles.loverCard}>
-            <h3>我的恋人</h3>
-            <div className={styles.loverBasic}>
-              <img src={userInfo.lover.avatar} alt="lover avatar" className={styles.loverAvatar} />
-              <div className={styles.loverDetail}>
-                <div className={styles.loverName}>{userInfo.lover.username}</div>
-                <div className={styles.loverUid}>
-                  用户号: {userInfo.lover.uid}
-                  <span className={styles.loverGender}>
-                    {userInfo.lover.gender === UserGender.男 ? (
-                      <SvgIcon name="boy" width={12} height={12} />
-                    ) : (
-                      <SvgIcon name="girl" width={12} height={12} />
-                    )}
-                  </span>
-                </div>
+    if (!userInfo) return null;
+
+    const content = [];
+
+    if (userInfo.lover) {
+      content.push(
+        <div key="lover" className={styles.loverCard}>
+          <h3>我的恋人</h3>
+          <div className={styles.loverBasic}>
+            <img src={userInfo.lover.avatar} alt="lover avatar" className={styles.loverAvatar} />
+            <div className={styles.loverDetail}>
+              <div className={styles.loverName}>{userInfo.lover.username}</div>
+              <div className={styles.loverUid}>
+                用户号: {userInfo.lover.uid}
+                <span className={styles.loverGender}>
+                  {userInfo.lover.gender === UserGender.男 ? (
+                    <SvgIcon name="boy" width={12} height={12} />
+                  ) : (
+                    <SvgIcon name="girl" width={12} height={12} />
+                  )}
+                </span>
               </div>
             </div>
           </div>
-        );
-      }
+        </div>,
+      );
+    }
 
-      // 没有恋人也没有请求
-      return (
-        <div className={styles.noLover}>
+    // 没有恋人
+    if (!userInfo.lover) {
+      content.push(
+        <div className={styles.noLover} key="noLover">
           <p>还没有绑定恋人</p>
           <button className={styles.bindButton} onClick={() => setIsModalOpen(true)}>
             绑定恋人
           </button>
-        </div>
+        </div>,
       );
     }
+
+    return content;
   };
 
   return (

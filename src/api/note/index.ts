@@ -1,7 +1,18 @@
 import request from "@/utils/request";
 import { PaginationQueryDto, PaginationResponseDto } from "@/types/request";
 
-export type GetNotesParams = PaginationQueryDto;
+export enum NoteType {
+  /** 全部笔记 */
+  全部 = "全部",
+  /** 我的笔记 */
+  我的 = "我的",
+  /** 恋人的笔记 */
+  恋人 = "恋人的",
+}
+
+export type GetNotesParams = PaginationQueryDto & {
+  type?: NoteType;
+};
 
 export interface Image {
   id: number;

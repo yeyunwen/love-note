@@ -1,4 +1,4 @@
-import React, { memo, useRef } from "react";
+import React, { memo, useRef, useEffect } from "react";
 import { WaterFallProps } from "./types";
 import { useWaterFallLayout, useInfiniteScroll } from "./hooks";
 import { WaterFallErrorBoundary } from "./ErrorBoundary";
@@ -46,7 +46,7 @@ const LoadingIndicator = memo<{ isFinish: boolean }>(({ isFinish }) => (
 ));
 
 const WaterFall = <T,>(props: WaterFallProps<T>): React.ReactElement => {
-  const { column, gap, data, isFinish, isLoading, needLoading, children, onReachBottom } = {
+  const { column, gap, data, isFinish, isLoading, children, onReachBottom } = {
     ...defaultProps,
     ...props,
   };
@@ -64,6 +64,19 @@ const WaterFall = <T,>(props: WaterFallProps<T>): React.ReactElement => {
   );
 
   useInfiniteScroll(loadingRef, isLoading, isFinish, onReachBottom);
+
+  // 解决瀑布流加载时，底部内容高度小于视口高度，导致无法触发 onReachBottom 的问题
+  useEffect(() => {
+    // 检查内容高度是否小于视口高度
+    if (
+      containerRef.current &&
+      Math.max(...columnHeights) < containerRef.current.clientHeight &&
+      !isLoading &&
+      !isFinish
+    ) {
+      onReachBottom?.();
+    }
+  }, [columnHeights, isLoading, isFinish, onReachBottom]);
 
   return (
     <WaterFallErrorBoundary>
@@ -97,7 +110,7 @@ const WaterFall = <T,>(props: WaterFallProps<T>): React.ReactElement => {
             );
           })}
         </div>
-        {needLoading && (
+        {isLoading && (
           <div ref={loadingRef}>
             <LoadingIndicator isFinish={isFinish ?? false} />
           </div>

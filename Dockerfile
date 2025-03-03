@@ -9,15 +9,11 @@ RUN npm install -g pnpm
 
 # 首先复制所有配置文件
 COPY package.json pnpm-lock.yaml ./
-COPY tsconfig.json .
-COPY .eslintrc.cjs .
-COPY .prettierrc .
-COPY vite.config.ts .
 
 # 安装依赖，跳过 husky 安装
 RUN HUSKY=0 pnpm install
 
-# 复制源代码
+# 复制所有源代码和配置文件
 COPY . .
 
 # 构建应用

@@ -13,11 +13,6 @@ COPY . .
 # 安装依赖，跳过 husky 安装
 RUN HUSKY=0 pnpm install
 
-COPY eslint.config.js .
-COPY tsconfig.app.json .
-COPY tsconfig.node.json .
-COPY tsconfig.json .
-
 # 构建应用
 RUN pnpm build
 

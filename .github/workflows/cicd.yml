@@ -25,11 +25,13 @@ jobs:
           version: latest
           run_install: false
 
-      # 只运行 lint 检查，构建工作交给 Dockerfile
-      - name: Install dependencies and lint
+      # 进行格式检查、lint 和 type check
+      - name: Install dependencies, format, lint and type check
         run: |
           pnpm install
+          pnpm format:check  # 只检查格式，不修改
           pnpm lint
+          pnpm type-check
 
       - name: Login to Aliyun Container Registry
         uses: docker/login-action@v3
@@ -48,7 +50,7 @@ jobs:
             ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.ALIYUN_NAMESPACE }}/frontend:${{ github.sha }}
 
       - name: Deploy to production
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.PROD_HOST }}

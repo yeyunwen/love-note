@@ -10,8 +10,8 @@ RUN npm install -g pnpm
 # 复制 package.json 和 pnpm-lock.yaml
 COPY package.json pnpm-lock.yaml ./
 
-# 安装依赖
-RUN pnpm install
+# 安装依赖，跳过 husky 安装
+RUN HUSKY=0 pnpm install
 
 # 复制源代码
 COPY . .

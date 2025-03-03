@@ -28,6 +28,7 @@ jobs:
       # 只运行 lint 检查，构建工作交给 Dockerfile
       - name: Install dependencies and lint
         run: |
+          pnpm install
           pnpm lint
 
       - name: Login to Aliyun Container Registry

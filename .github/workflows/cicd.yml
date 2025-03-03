@@ -61,7 +61,7 @@ jobs:
             docker login --username=${{ secrets.ALIYUN_USERNAME }} --password=${{ secrets.ALIYUN_PASSWORD }} ${{ secrets.DOCKER_REGISTRY }}
 
             # 进入应用目录
-            cd /love-note-app
+            cd /root/love-note-app
 
             # 拉取最新镜像
             docker pull ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.ALIYUN_NAMESPACE }}/frontend:latest

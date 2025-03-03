@@ -7,8 +7,12 @@ WORKDIR /app
 # 安装 pnpm (使用 npm 安装而不是 corepack)
 RUN npm install -g pnpm
 
-# 复制 package.json 和 pnpm-lock.yaml
+# 首先复制所有配置文件
 COPY package.json pnpm-lock.yaml ./
+COPY tsconfig.json .
+COPY .eslintrc.cjs .
+COPY .prettierrc .
+COPY vite.config.ts .
 
 # 安装依赖，跳过 husky 安装
 RUN HUSKY=0 pnpm install

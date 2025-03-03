@@ -7,14 +7,11 @@ WORKDIR /app
 # 安装 pnpm (使用 npm 安装而不是 corepack)
 RUN npm install -g pnpm
 
-# 首先复制所有配置文件
-COPY package.json pnpm-lock.yaml ./
+# 复制所有源代码和配置文件
+COPY . .
 
 # 安装依赖，跳过 husky 安装
 RUN HUSKY=0 pnpm install
-
-# 复制所有源代码和配置文件
-COPY . .
 
 # 构建应用
 RUN pnpm build

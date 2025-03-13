@@ -72,6 +72,12 @@ jobs:
 
             echo "开始部署流程..."
 
+            # 检查端口占用
+            if lsof -i :80 > /dev/null; then
+              echo "停止当前运行的服务..."
+              docker-compose down || true
+            fi
+
             # 登录到阿里云容器服务
             echo "正在登录阿里云容器服务..."
             docker login --username=${{ secrets.ALIYUN_USERNAME }} --password=${{ secrets.ALIYUN_PASSWORD }} ${{ secrets.DOCKER_REGISTRY }} || {

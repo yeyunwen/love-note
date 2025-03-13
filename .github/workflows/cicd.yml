@@ -86,16 +86,16 @@ jobs:
               exit 1
             }
 
-            # 检查端口占用
-            if lsof -i :80 > /dev/null; then
-              echo "停止当前运行的服务..."
-              docker-compose down || true
+            # 停止并删除占用 80 端口的前端容器
+            echo "停止现有前端容器..."
+            FRONTEND_CONTAINER=$(docker ps -q --filter publish=80)
+            if [ ! -z "$FRONTEND_CONTAINER" ]; then
+              echo "找到占用 80 端口的容器: $FRONTEND_CONTAINER"
+              docker stop $FRONTEND_CONTAINER
+              docker rm $FRONTEND_CONTAINER
+            else
+              echo "没有找到占用 80 端口的容器"
             fi
-
-            # 强制停止并删除旧容器
-            echo "清理旧容器..."
-            docker-compose down --remove-orphans
-            docker rm -f love-note-h5 || true
 
             # 拉取最新镜像
             echo "拉取最新镜像..."
@@ -111,6 +111,7 @@ jobs:
               exit 1
             }
 
+            # 重启服务
             echo "重启服务..."
             docker-compose up -d || {
               echo "❌ 重启服务失败"
@@ -125,9 +126,5 @@ jobs:
               docker-compose logs h5
               exit 1
             fi
-
-            # 清理旧镜像
-            echo "清理旧镜像..."
-            docker image prune -f
 
             echo "✅ 部署完成"

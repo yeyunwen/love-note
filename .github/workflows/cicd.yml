@@ -46,8 +46,18 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.ALIYUN_NAMESPACE }}/frontend:latest
-            ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.ALIYUN_NAMESPACE }}/frontend:${{ github.sha }}
+            ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.ALIYUN_NAMESPACE }}/love-note-h5:latest
+            ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.ALIYUN_NAMESPACE }}/love-note-h5:${{ github.sha }}
+
+      - name: Upload docker directory
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USERNAME }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          source: "./docker/*" # 指定要上传的本地目录
+          target: "/root/app/love-note/h5" # 指定目标目录
+          strip_components: 1 # 去掉源路径中的第一个组件
 
       - name: Deploy to production
         if: github.ref == 'refs/heads/main'
@@ -69,29 +79,29 @@ jobs:
               exit 1
             }
 
-            # 进入应用目录
-            echo "进入应用目录..."
-            cd /root/love-note-app || {
-              echo "❌ 进入目录失败"
+            # 拉取最新镜像
+            echo "拉取最新镜像..."
+            docker pull ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.ALIYUN_NAMESPACE }}/love-note-h5:latest || {
+              echo "❌ 拉取镜像失败"
               exit 1
             }
 
-            # 拉取最新镜像
-            echo "拉取最新镜像..."
-            docker pull ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.ALIYUN_NAMESPACE }}/frontend:latest || {
-              echo "❌ 拉取镜像失败"
+            # 进入应用目录
+            echo "进入应用目录..."
+            cd /root/love-note/h5 || {
+              echo "❌ 进入目录失败"
               exit 1
             }
 
             # 更新服务
             echo "更新服务..."
-            docker-compose pull web || {
+            docker-compose pull || {
               echo "❌ 拉取服务失败"
               exit 1
             }
 
             echo "重启服务..."
-            docker-compose up -d --no-deps web || {
+            docker-compose up -d || {
               echo "❌ 重启服务失败"
               exit 1
             }
@@ -101,7 +111,7 @@ jobs:
             sleep 5  # 等待服务启动
             if ! docker-compose ps | grep -q "Up"; then
               echo "❌ 服务未正常运行"
-              docker-compose logs web
+              docker-compose logs h5
               exit 1
             fi
 

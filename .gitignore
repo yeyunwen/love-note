@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Docker
+docker/.env
+
 # Editor directories and files
 .idea
 .DS_Store

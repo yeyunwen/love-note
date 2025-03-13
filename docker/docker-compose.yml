@@ -1,0 +1,16 @@
+version: "3.8"
+name: love-note-h5
+
+services:
+  h5:
+    image: ${DOCKER_REGISTRY}/${ALIYUN_NAMESPACE}/love-note-h5:latest
+    restart: always
+    container_name: love-note-h5
+    ports:
+      - "80:80"
+    networks:
+      - love-note-network
+
+networks:
+  love-note-network:
+    external: true # 确保这里配置正确

@@ -72,12 +72,6 @@ jobs:
 
             echo "开始部署流程..."
 
-            # 检查端口占用
-            if lsof -i :80 > /dev/null; then
-              echo "停止当前运行的服务..."
-              docker-compose down || true
-            fi
-
             # 登录到阿里云容器服务
             echo "正在登录阿里云容器服务..."
             docker login --username=${{ secrets.ALIYUN_USERNAME }} --password=${{ secrets.ALIYUN_PASSWORD }} ${{ secrets.DOCKER_REGISTRY }} || {
@@ -85,17 +79,28 @@ jobs:
               exit 1
             }
 
-            # 拉取最新镜像
-            echo "拉取最新镜像..."
-            docker pull ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.ALIYUN_NAMESPACE }}/love-note-h5:latest || {
-              echo "❌ 拉取镜像失败"
-              exit 1
-            }
-
             # 进入应用目录
             echo "进入应用目录..."
             cd /root/app/love-note/h5 || {
               echo "❌ 进入目录失败"
+              exit 1
+            }
+
+            # 检查端口占用
+            if lsof -i :80 > /dev/null; then
+              echo "停止当前运行的服务..."
+              docker-compose down || true
+            fi
+
+            # 强制停止并删除旧容器
+            echo "清理旧容器..."
+            docker-compose down --remove-orphans
+            docker rm -f love-note-h5 || true
+
+            # 拉取最新镜像
+            echo "拉取最新镜像..."
+            docker pull ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.ALIYUN_NAMESPACE }}/love-note-h5:latest || {
+              echo "❌ 拉取镜像失败"
               exit 1
             }
 
